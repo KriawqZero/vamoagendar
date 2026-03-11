@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Plan {
+  FREE
+  PRO
+}
+
+enum ExceptionType {
+  UNAVAILABLE
+  OVERRIDE
+}
+
+enum AppointmentStatus {
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  INACTIVE
+  TRIALING
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  slug         String   @unique
+  plan         Plan     @default(FREE)
+  accentColor  String   @default("#7C3AED")
+  logoUrl      String?
+  businessName String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  services               Service[]
+  workingHours           WorkingHours[]
+  availabilityExceptions AvailabilityException[]
+  holidays               Holiday[]
+  appointments           Appointment[]
+  subscription           Subscription?
+}
+
+model Service {
+  id              String   @id @default(cuid())
+  userId          String
+  name            String
+  durationMinutes Int
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
+
+  @@index([userId])
+}
+
+model WorkingHours {
+  id        String @id @default(cuid())
+  userId    String
+  dayOfWeek Int // 0=Sunday ... 6=Saturday
+  startTime String // "09:00"
+  endTime   String // "18:00"
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, dayOfWeek])
+}
+
+model AvailabilityException {
+  id        String        @id @default(cuid())
+  userId    String
+  date      DateTime      @db.Date
+  startTime String? // null = entire day off
+  endTime   String?
+  type      ExceptionType
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+}
+
+model Holiday {
+  id     String   @id @default(cuid())
+  userId String
+  date   DateTime @db.Date
+  name   String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+}
+
+model Appointment {
+  id          String            @id @default(cuid())
+  userId      String
+  serviceId   String
+  clientName  String
+  clientEmail String?
+  clientPhone String?
+  startTime   DateTime
+  endTime     DateTime
+  status      AppointmentStatus @default(CONFIRMED)
+  createdAt   DateTime          @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id])
+
+  @@index([userId, startTime])
+}
+
+model Subscription {
+  id                 String             @id @default(cuid())
+  userId             String             @unique
+  plan               Plan               @default(PRO)
+  status             SubscriptionStatus @default(INACTIVE)
+  mpSubscriptionId   String?            @unique
+  mpCustomerId       String?
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  canceledAt         DateTime?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
