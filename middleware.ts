@@ -1,23 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 
-export async function middleware(request: NextRequest) {
+export function middleware(request: NextRequest) {
+  const sessionCookie = request.cookies.get("better-auth.session_token");
   const { pathname } = request.nextUrl;
   const isDashboard = pathname.startsWith("/dashboard");
   const isAuthPage = pathname === "/login" || pathname === "/register";
 
-  // Validate session using Better Auth
-  const session = await auth.api.getSession({
-    headers: request.headers,
-  });
-
-  const isAuthenticated = !!session?.user;
-
-  if (isDashboard && !isAuthenticated) {
+  // Check for session cookie (Edge Runtime compatible)
+  // Note: Full session validation happens in Server Components via getSession()
+  if (isDashboard && !sessionCookie) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (isAuthPage && isAuthenticated) {
+  if (isAuthPage && sessionCookie) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
