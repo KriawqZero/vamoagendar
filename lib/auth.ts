@@ -17,6 +17,16 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     },
   },
+  user: {
+    additionalFields: {
+      bookingCode: {
+        type: "string",
+        required: true,
+        input: false,          // usuário / OAuth não enviam esse campo
+        defaultValue: null,    // vamos setar via hook
+      },
+    },
+  },
   account: {
     accountLinking: {
       enabled: true,
@@ -36,15 +46,12 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (user) => {
-          // Generate bookingCode for all new users (including Google signups)
-          const bookingCode = generateBookingCode();
-          console.log("Better Auth Hook - Creating user with bookingCode:", user.email, bookingCode);
-          return {
-            data: {
-              ...user,
-              bookingCode,
-            },
-          };
+          // se já veio algum bookingCode (caso específico), mantém
+          if (!user.bookingCode) {
+            user.bookingCode = generateBookingCode();
+          }
+
+          return { data: user };
         },
       },
     },
