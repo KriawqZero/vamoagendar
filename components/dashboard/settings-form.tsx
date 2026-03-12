@@ -10,7 +10,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Copy, ExternalLink, Lock, Crown } from "lucide-react";
+import { Copy, ExternalLink, Crown } from "lucide-react";
+import { FeatureLockCard } from "@/components/upsell/feature-lock-card";
 
 interface SettingsFormProps {
   user: {
@@ -148,7 +149,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
                   id="customSlug"
                   name="customSlug"
                   defaultValue={user.customSlug || ""}
-                  placeholder="seu-negocio"
+                  placeholder="sua-marca"
                   className="flex-1"
                 />
               </div>
@@ -161,22 +162,11 @@ export function SettingsForm({ user }: SettingsFormProps) {
             </form>
           </div>
         ) : (
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
-            <div className="flex items-center gap-2 text-zinc-500">
-              <Lock size={16} />
-              <p className="text-sm">Link personalizado disponível no plano Pro</p>
-            </div>
-            <p className="mt-2 text-xs text-zinc-600">
-              Com o plano Pro, você pode ter um link como <span className="font-mono text-zinc-500">vamoagendar.com.br/seu-negocio</span>
-            </p>
-            <Link
-              href="/dashboard/assinatura"
-              className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-violet-500 hover:text-violet-400"
-            >
-              <Crown size={14} />
-              Fazer upgrade para Pro
-            </Link>
-          </div>
+          <FeatureLockCard
+            featureName="Link personalizado"
+            benefitText="Tenha um link memorável e profissional para compartilhar com seus clientes."
+            example="vamoagendar.com.br/sua-marca"
+          />
         )}
       </section>
 
@@ -203,54 +193,54 @@ export function SettingsForm({ user }: SettingsFormProps) {
           <Input
             id="settings-businessName"
             name="businessName"
-            label="Nome do negócio"
+            label="Nome da empresa ou marca"
             defaultValue={user.businessName || ""}
             required
             error={profileState.fieldErrors?.businessName?.[0]}
           />
 
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2">
+          {isPro ? (
+            <div className="space-y-1.5">
               <label htmlFor="settings-logoUrl" className="text-sm font-medium text-zinc-300">
                 URL do logo (opcional)
               </label>
-              {!isPro && <Badge variant="default" className="text-[10px]"><Lock size={10} className="mr-1" />Pro</Badge>}
+              <Input
+                id="settings-logoUrl"
+                name="logoUrl"
+                defaultValue={user.logoUrl || ""}
+                placeholder="https://exemplo.com/logo.png"
+                error={profileState.fieldErrors?.logoUrl?.[0]}
+              />
             </div>
-            <Input
-              id="settings-logoUrl"
-              name="logoUrl"
-              defaultValue={user.logoUrl || ""}
-              placeholder="https://exemplo.com/logo.png"
-              error={profileState.fieldErrors?.logoUrl?.[0]}
-              disabled={!isPro}
+          ) : (
+            <FeatureLockCard
+              featureName="Logo personalizado"
+              benefitText="Adicione o logo da sua marca na página de agendamento para uma experiência mais profissional."
             />
-            {!isPro && (
-              <p className="text-xs text-zinc-600">Disponível no plano Pro</p>
-            )}
-          </div>
+          )}
 
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center gap-2">
+          {isPro ? (
+            <div className="flex flex-col gap-1.5">
               <label htmlFor="settings-accentColor" className="text-sm font-medium text-zinc-300">
                 Cor de destaque
               </label>
-              {!isPro && <Badge variant="default" className="text-[10px]"><Lock size={10} className="mr-1" />Pro</Badge>}
+              <div className="flex items-center gap-3">
+                <input
+                  id="settings-accentColor"
+                  name="accentColor"
+                  type="color"
+                  defaultValue={user.accentColor}
+                  className="h-10 w-14 cursor-pointer rounded-lg border border-zinc-700 bg-zinc-900"
+                />
+                <span className="text-xs text-zinc-500">{user.accentColor}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <input
-                id="settings-accentColor"
-                name="accentColor"
-                type="color"
-                defaultValue={user.accentColor}
-                className="h-10 w-14 cursor-pointer rounded-lg border border-zinc-700 bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
-                disabled={!isPro}
-              />
-              <span className="text-xs text-zinc-500">{user.accentColor}</span>
-            </div>
-            {!isPro && (
-              <p className="text-xs text-zinc-600">Disponível no plano Pro</p>
-            )}
-          </div>
+          ) : (
+            <FeatureLockCard
+              featureName="Cor personalizada"
+              benefitText="Escolha a cor da sua marca para personalizar a página de agendamento e reforçar sua identidade visual."
+            />
+          )}
 
           <div>
             <label className="text-sm font-medium text-zinc-300">Email</label>

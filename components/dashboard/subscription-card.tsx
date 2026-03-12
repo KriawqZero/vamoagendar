@@ -125,28 +125,37 @@ export function SubscriptionCard({ plan, subscription, statusParam }: Subscripti
         <div className="rounded-2xl border-2 border-violet-500/30 bg-violet-500/5 p-6">
           <div className="flex items-center gap-2">
             <Crown size={20} className="text-violet-400" />
-            <h3 className="text-lg font-semibold text-zinc-100">Upgrade para Pro</h3>
+            <h3 className="text-lg font-semibold text-zinc-100">Destaque sua marca com o Pro</h3>
           </div>
           <p className="mt-2 text-sm text-zinc-400">
             Desbloqueie todos os recursos por apenas <span className="font-semibold text-violet-400">R$ 9,90/mês</span>
           </p>
+          <p className="mt-1 text-xs text-zinc-500">
+            Menos de R$ 0,33 por dia — o preço de um cafezinho
+          </p>
 
           <ul className="mt-4 space-y-2">
             {[
-              "Serviços ilimitados",
-              "Link personalizado",
-              "Logo e cor personalizada",
-              "Lembretes por WhatsApp",
+              "Serviços ilimitados — crie quantos precisar",
+              "Link personalizado — vamoagendar.com.br/sua-marca",
+              "Logo e cor da sua marca — identidade profissional",
+              "Lembretes automáticos por WhatsApp (em breve)",
             ].map((benefit) => (
-              <li key={benefit} className="flex items-center gap-2 text-sm text-zinc-300">
-                <Check size={14} className="text-emerald-400" />
-                {benefit}
+              <li key={benefit} className="flex items-start gap-2 text-sm text-zinc-300">
+                <Check size={14} className="mt-0.5 shrink-0 text-emerald-400" />
+                <span>{benefit}</span>
               </li>
             ))}
           </ul>
 
+          <div className="mt-6 rounded-xl bg-zinc-900/50 p-3">
+            <p className="text-xs text-zinc-500">
+              💡 <span className="font-medium text-zinc-400">Profissionais que usam o Pro</span> relatam mais confiança dos clientes e agenda mais cheia
+            </p>
+          </div>
+
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Button onClick={handleUpgrade} loading={upgrading}>
+            <Button onClick={handleUpgrade} loading={upgrading} className="flex-1">
               <Crown size={16} className="mr-1.5" />
               Assinar Pro — R$ 9,90/mês
             </Button>
@@ -154,7 +163,7 @@ export function SubscriptionCard({ plan, subscription, statusParam }: Subscripti
               href="/planos"
               className="inline-flex items-center justify-center rounded-xl border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-300 hover:bg-zinc-800"
             >
-              Ver detalhes dos planos
+              Ver detalhes
             </Link>
           </div>
         </div>

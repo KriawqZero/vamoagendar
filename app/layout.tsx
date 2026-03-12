@@ -9,7 +9,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "VamoAgendar",
-  description: "Agendamento simples para profissionais.",
+  description: "Sistema de agendamento online para profissionais, clínicas e empresas. Simples, rápido e profissional.",
 };
 
 export default function RootLayout({

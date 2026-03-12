@@ -32,8 +32,8 @@ export function RegisterForm() {
         id="businessName"
         name="businessName"
         type="text"
-        label="Nome do negócio"
-        placeholder="Barbearia Neto"
+        label="Nome da empresa ou marca"
+        placeholder="Studio Maria"
         required
         error={state.fieldErrors?.businessName?.[0]}
       />

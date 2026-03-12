@@ -44,7 +44,7 @@ export function ServiceForm({ service, onSuccess }: ServiceFormProps) {
         id="name"
         name="name"
         label="Nome do serviço"
-        placeholder="Ex: Corte de cabelo"
+        placeholder="Ex: Consulta, Corte, Sessão"
         defaultValue={service?.name}
         required
         error={state.fieldErrors?.name?.[0]}

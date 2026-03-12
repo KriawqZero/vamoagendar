@@ -7,7 +7,7 @@ import { ServiceForm } from "@/components/dashboard/service-form";
 import { Modal } from "@/components/ui/modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, Pencil, Trash2, Plus } from "lucide-react";
+import { Clock, Pencil, Trash2, Plus, Crown, CheckCircle2 } from "lucide-react";
 
 interface ServiceItem {
   id: string;
@@ -25,6 +25,9 @@ interface ServiceListProps {
 export function ServiceList({ services, canCreate, planLimit }: ServiceListProps) {
   const [showCreate, setShowCreate] = useState(false);
   const [editService, setEditService] = useState<ServiceItem | null>(null);
+  
+  const isNearLimit = planLimit < Infinity && services.length === planLimit - 1;
+  const isAtLimit = !canCreate && services.length > 0;
 
   return (
     <div>
@@ -43,13 +46,45 @@ export function ServiceList({ services, canCreate, planLimit }: ServiceListProps
         )}
       </div>
 
-      {!canCreate && services.length > 0 && (
-        <div className="mb-4 rounded-xl bg-amber-900/20 p-3 text-sm text-amber-400">
-          Limite de serviços atingido.{" "}
+      {isNearLimit && (
+        <div className="mb-4 rounded-xl border border-amber-500/30 bg-amber-900/10 p-3 text-sm text-amber-400">
+          Você está quase no limite ({services.length}/{planLimit} serviços).{" "}
           <Link href="/dashboard/assinatura" className="font-medium underline hover:text-amber-300">
-            Faça upgrade para o plano Pro
+            Seja Pro
           </Link>{" "}
-          para criar mais.
+          para ter serviços ilimitados.
+        </div>
+      )}
+
+      {isAtLimit && (
+        <div className="mb-4 rounded-xl border-2 border-violet-500/30 bg-violet-500/5 p-4">
+          <div className="flex items-center gap-2">
+            <Crown size={18} className="text-violet-400" />
+            <p className="text-sm font-semibold text-zinc-100">Limite de serviços atingido</p>
+          </div>
+          <p className="mt-2 text-sm text-zinc-400">
+            Com o plano Pro você tem acesso a:
+          </p>
+          <ul className="mt-3 space-y-2">
+            {[
+              "Serviços ilimitados",
+              "Link personalizado",
+              "Logo e cor da sua marca",
+              "Lembretes por WhatsApp",
+            ].map((benefit) => (
+              <li key={benefit} className="flex items-center gap-2 text-sm text-zinc-300">
+                <CheckCircle2 size={14} className="text-emerald-400" />
+                {benefit}
+              </li>
+            ))}
+          </ul>
+          <Link
+            href="/dashboard/assinatura"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
+          >
+            <Crown size={16} />
+            Fazer upgrade — R$ 9,90/mês
+          </Link>
         </div>
       )}
 

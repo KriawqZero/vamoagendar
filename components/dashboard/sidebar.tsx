@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { logoutAction } from "@/lib/actions/auth.actions";
+import { SidebarUpgradeCard } from "@/components/upsell/sidebar-upgrade-card";
 
 const navItems = [
   { href: "/dashboard", label: "Agenda", icon: CalendarDays },
@@ -74,6 +75,8 @@ export function Sidebar({ businessName, plan }: SidebarProps) {
           );
         })}
       </nav>
+
+      {plan === "FREE" && <SidebarUpgradeCard />}
 
       <form action={logoutAction} className="mt-auto">
         <button

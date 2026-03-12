@@ -82,7 +82,7 @@ export default function PlanosPage() {
                   <span className="text-sm text-zinc-500">/mês</span>
                 </div>
                 <p className="mt-2 text-sm text-zinc-500">
-                  Para quem está começando e quer testar.
+                  Ideal para começar e testar o sistema.
                 </p>
               </div>
 
@@ -119,7 +119,7 @@ export default function PlanosPage() {
                   <span className="text-sm text-zinc-500">/mês</span>
                 </div>
                 <p className="mt-2 text-sm text-zinc-400">
-                  Para profissionais que querem crescer.
+                  Para profissionais que querem se destacar e crescer.
                 </p>
               </div>
 
@@ -141,7 +141,7 @@ export default function PlanosPage() {
             </div>
           </div>
 
-          {/* FAQ-like section */}
+          {/* FAQ section */}
           <div className="mx-auto mt-16 max-w-2xl text-center">
             <h3 className="text-lg font-semibold text-zinc-200">Dúvidas frequentes</h3>
             <div className="mt-6 space-y-4 text-left">
@@ -163,6 +163,36 @@ export default function PlanosPage() {
                   Pagamento via Mercado Pago. Aceita PIX, cartão de crédito e boleto.
                 </p>
               </div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
+                <p className="text-sm font-medium text-zinc-200">Posso fazer upgrade depois?</p>
+                <p className="mt-1 text-sm text-zinc-500">
+                  Sim! Você pode começar no plano gratuito e fazer upgrade para Pro a qualquer momento.
+                </p>
+              </div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
+                <p className="text-sm font-medium text-zinc-200">O que acontece se eu cancelar o Pro?</p>
+                <p className="mt-1 text-sm text-zinc-500">
+                  Seu plano volta para o gratuito. Você mantém até 2 serviços e o link automático continua funcionando.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Final CTA */}
+          <div className="mx-auto mt-16 max-w-2xl text-center">
+            <div className="rounded-2xl border border-violet-500/30 bg-violet-500/5 p-8">
+              <h3 className="text-xl font-bold text-zinc-100">
+                Pronto para começar?
+              </h3>
+              <p className="mt-2 text-sm text-zinc-400">
+                Crie sua conta grátis agora e comece a receber agendamentos em minutos
+              </p>
+              <Link
+                href="/register"
+                className="mt-6 inline-flex rounded-xl bg-violet-600 px-8 py-3 text-sm font-semibold text-white hover:bg-violet-700"
+              >
+                Criar conta grátis
+              </Link>
             </div>
           </div>
         </div>

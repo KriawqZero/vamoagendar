@@ -14,7 +14,7 @@ export default function RegisterPage() {
             VamoAgendar
           </h1>
           <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-            Crie sua conta gratuita
+            Comece grátis em menos de 1 minuto
           </p>
         </div>
 
