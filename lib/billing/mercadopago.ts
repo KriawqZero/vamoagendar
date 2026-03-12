@@ -42,7 +42,7 @@ export class MercadoPagoProvider implements BillingProvider {
         },
         auto_return: "approved",
         external_reference: input.userId,
-        notification_url: `${process.env.APP_URL}/api/billing/webhook`,
+        notification_url: `${process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "http://localhost:3000"}/api/billing/webhook`,
         metadata: {
           user_id: input.userId,
           plan_id: input.planId,

@@ -19,7 +19,7 @@ export async function initiateUpgrade(userId: string): Promise<UpgradeResult> {
     return { success: false, error: "Você já é Pro!" };
   }
 
-  const appUrl = process.env.APP_URL || "http://localhost:3000";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "http://localhost:3000";
 
   try {
     const provider = getBillingProvider();
