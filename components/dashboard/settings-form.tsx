@@ -20,7 +20,7 @@ interface SettingsFormProps {
     businessName: string | null;
     logoUrl: string | null;
     accentColor: string;
-    bookingCode: string;
+    bookingCode?: string;
     customSlug: string | null;
     slugChangedAt: string | null;
     plan: string;
