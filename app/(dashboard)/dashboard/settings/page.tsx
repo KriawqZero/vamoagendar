@@ -29,7 +29,7 @@ export default async function SettingsPage() {
           businessName: user.businessName,
           logoUrl: user.logoUrl,
           accentColor: user.accentColor,
-          bookingCode: user.bookingCode,
+          bookingCode: user.bookingCode ?? undefined,
           customSlug: user.customSlug,
           slugChangedAt: user.slugChangedAt?.toISOString() ?? null,
           plan: user.plan,

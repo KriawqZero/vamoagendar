@@ -20,7 +20,7 @@ CREATE TABLE "User" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "passwordHash" TEXT,
-    "bookingCode" TEXT NOT NULL,
+    "bookingCode" TEXT,
     "customSlug" TEXT,
     "slugChangedAt" TIMESTAMP(3),
     "plan" "Plan" NOT NULL DEFAULT 'FREE',
