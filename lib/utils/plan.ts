@@ -3,7 +3,7 @@ import { Plan } from "@/generated/prisma/client";
 export const PLAN_LIMITS = {
   [Plan.FREE]: {
     maxServices: 2,
-    canEditSlug: false,
+    canCustomSlug: false,
     canCustomize: false,
     canCustomizeLogo: false,
     whatsappReminders: false,
@@ -12,7 +12,7 @@ export const PLAN_LIMITS = {
   },
   [Plan.PRO]: {
     maxServices: Infinity,
-    canEditSlug: true,
+    canCustomSlug: true,
     canCustomize: true,
     canCustomizeLogo: true,
     whatsappReminders: true,

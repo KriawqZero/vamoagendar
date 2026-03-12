@@ -2,7 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import { userRepository } from "@/lib/repositories/user.repository";
-import { isValidSlug } from "@/lib/utils/slug";
+import { isValidCustomSlug, isReservedSlug } from "@/lib/utils/slug";
 import { getPlanLimits } from "@/lib/utils/plan";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -27,6 +27,11 @@ export async function updateProfileAction(
   const session = await auth();
   if (!session?.user?.id) return { error: "Não autorizado." };
 
+  const user = await userRepository.findById(session.user.id);
+  if (!user) return { error: "Usuário não encontrado." };
+
+  const limits = getPlanLimits(user.plan);
+
   const parsed = profileSchema.safeParse({
     name: formData.get("name"),
     businessName: formData.get("businessName"),
@@ -41,8 +46,8 @@ export async function updateProfileAction(
   await userRepository.update(session.user.id, {
     name: parsed.data.name,
     businessName: parsed.data.businessName,
-    logoUrl: parsed.data.logoUrl || null,
-    accentColor: parsed.data.accentColor,
+    logoUrl: limits.canCustomizeLogo ? (parsed.data.logoUrl || null) : user.logoUrl,
+    accentColor: limits.canCustomize ? parsed.data.accentColor : user.accentColor,
   });
 
   revalidatePath("/dashboard/settings");
@@ -50,7 +55,7 @@ export async function updateProfileAction(
   return { success: true };
 }
 
-export async function updateSlugAction(
+export async function updateCustomSlugAction(
   _prevState: SettingsState,
   formData: FormData
 ): Promise<SettingsState> {
@@ -61,24 +66,44 @@ export async function updateSlugAction(
   if (!user) return { error: "Usuário não encontrado." };
 
   const limits = getPlanLimits(user.plan);
-  if (!limits.canEditSlug) {
+  if (!limits.canCustomSlug) {
     return { error: "Faça upgrade para o plano Pro para personalizar seu link." };
   }
 
-  const newSlug = (formData.get("slug") as string).toLowerCase().trim();
+  const newSlug = (formData.get("customSlug") as string).toLowerCase().trim();
 
-  if (!isValidSlug(newSlug)) {
-    return { error: "Slug inválido. Use apenas letras, números e hifens (mínimo 3 caracteres)." };
+  if (!isValidCustomSlug(newSlug)) {
+    return { error: "Link inválido. Use 3-32 caracteres: letras, números e hifens (sem hifens consecutivos)." };
   }
 
-  if (newSlug !== user.slug) {
-    const exists = await userRepository.slugExists(newSlug);
+  if (isReservedSlug(newSlug)) {
+    return { error: "Este link está reservado pelo sistema. Escolha outro." };
+  }
+
+  // Check 7-day cooldown
+  if (user.slugChangedAt) {
+    const daysSinceChange = Math.floor(
+      (Date.now() - user.slugChangedAt.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    if (daysSinceChange < 7) {
+      const daysRemaining = 7 - daysSinceChange;
+      return {
+        error: `Você poderá alterar seu link novamente em ${daysRemaining} dia${daysRemaining > 1 ? "s" : ""}.`,
+      };
+    }
+  }
+
+  if (newSlug !== user.customSlug) {
+    const exists = await userRepository.customSlugExists(newSlug);
     if (exists) {
       return { error: "Este link já está em uso." };
     }
   }
 
-  await userRepository.update(session.user.id, { slug: newSlug });
+  await userRepository.update(session.user.id, {
+    customSlug: newSlug,
+    slugChangedAt: new Date(),
+  });
 
   revalidatePath("/dashboard/settings");
   return { success: true };

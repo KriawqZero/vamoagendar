@@ -16,7 +16,9 @@ CREATE TABLE "User" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "passwordHash" TEXT NOT NULL,
-    "slug" TEXT NOT NULL,
+    "bookingCode" TEXT NOT NULL,
+    "customSlug" TEXT,
+    "slugChangedAt" TIMESTAMP(3),
     "plan" "Plan" NOT NULL DEFAULT 'FREE',
     "accentColor" TEXT NOT NULL DEFAULT '#7C3AED',
     "logoUrl" TEXT,
@@ -109,7 +111,10 @@ CREATE TABLE "Subscription" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_slug_key" ON "User"("slug");
+CREATE UNIQUE INDEX "User_bookingCode_key" ON "User"("bookingCode");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_customSlug_key" ON "User"("customSlug");
 
 -- CreateIndex
 CREATE INDEX "Service_userId_idx" ON "Service"("userId");

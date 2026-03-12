@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { toggleServiceAction, deleteServiceAction } from "@/lib/actions/service.actions";
 import { ServiceForm } from "@/components/dashboard/service-form";
 import { Modal } from "@/components/ui/modal";
@@ -45,9 +46,9 @@ export function ServiceList({ services, canCreate, planLimit }: ServiceListProps
       {!canCreate && services.length > 0 && (
         <div className="mb-4 rounded-xl bg-amber-900/20 p-3 text-sm text-amber-400">
           Limite de serviços atingido.{" "}
-          <a href="/dashboard/assinatura" className="font-medium underline hover:text-amber-300">
+          <Link href="/dashboard/assinatura" className="font-medium underline hover:text-amber-300">
             Faça upgrade para o plano Pro
-          </a>{" "}
+          </Link>{" "}
           para criar mais.
         </div>
       )}

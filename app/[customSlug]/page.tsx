@@ -1,16 +1,17 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { userRepository } from "@/lib/repositories/user.repository";
 import { serviceRepository } from "@/lib/repositories/service.repository";
 import { BookingWizard } from "@/components/booking/booking-wizard";
 import type { Metadata } from "next";
 
 interface BookingPageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ customSlug: string }>;
 }
 
 export async function generateMetadata({ params }: BookingPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const user = await userRepository.findBySlug(slug);
+  const { customSlug } = await params;
+  const user = await userRepository.findByCustomSlug(customSlug);
   if (!user) return { title: "Não encontrado" };
   return {
     title: `Agendar | ${user.businessName || user.name}`,
@@ -19,8 +20,8 @@ export async function generateMetadata({ params }: BookingPageProps): Promise<Me
 }
 
 export default async function BookingPage({ params }: BookingPageProps) {
-  const { slug } = await params;
-  const user = await userRepository.findBySlug(slug);
+  const { customSlug } = await params;
+  const user = await userRepository.findByCustomSlug(customSlug);
   if (!user) notFound();
 
   const services = await serviceRepository.findActiveByUserId(user.id);
@@ -77,9 +78,9 @@ export default async function BookingPage({ params }: BookingPageProps) {
         {/* Footer */}
         <p className="mt-8 text-center text-xs text-zinc-700">
           Agendamento por{" "}
-          <a href="/" className="text-zinc-500 hover:text-zinc-400">
+          <Link href="/" className="text-zinc-500 hover:text-zinc-400">
             VamoAgendar
-          </a>
+          </Link>
         </p>
       </div>
     </div>

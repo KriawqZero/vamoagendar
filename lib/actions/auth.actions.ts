@@ -3,7 +3,7 @@
 import bcrypt from "bcryptjs";
 import { signIn, signOut } from "@/lib/auth";
 import { userRepository } from "@/lib/repositories/user.repository";
-import { generateSlug } from "@/lib/utils/slug";
+import { generateBookingCode } from "@/lib/utils/slug";
 import { z } from "zod";
 
 const registerSchema = z.object({
@@ -47,13 +47,13 @@ export async function registerAction(
   }
 
   const passwordHash = await bcrypt.hash(password, 12);
-  const slug = generateSlug();
+  const bookingCode = generateBookingCode();
 
   await userRepository.create({
     name,
     email,
     passwordHash,
-    slug,
+    bookingCode,
     businessName,
   });
 

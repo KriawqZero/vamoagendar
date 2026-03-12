@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useActionState, useEffect } from "react";
+import { useState, useActionState } from "react";
 import { submitBookingAction, fetchSlotsAction, type BookingState } from "@/lib/actions/booking.actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,12 +31,6 @@ export function BookingWizard({ userId, services, accentColor, businessName }: B
   const [slots, setSlots] = useState<string[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [state, formAction, pending] = useActionState(submitBookingAction, initialState);
-
-  useEffect(() => {
-    if (state.success) {
-      setStep("done");
-    }
-  }, [state.success]);
 
   const handleServiceSelect = (service: ServiceOption) => {
     setSelectedService(service);
@@ -89,7 +83,7 @@ export function BookingWizard({ userId, services, accentColor, businessName }: B
 
   const toDateValue = (d: Date) => d.toISOString().split("T")[0];
 
-  if (step === "done") {
+  if (state.success) {
     return (
       <div className="flex flex-col items-center py-12 text-center">
         <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10">

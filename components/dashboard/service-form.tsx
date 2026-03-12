@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import {
   createServiceAction,
   updateServiceAction,
@@ -24,9 +24,11 @@ export function ServiceForm({ service, onSuccess }: ServiceFormProps) {
   const action = service ? updateServiceAction : createServiceAction;
   const [state, formAction, pending] = useActionState(action, initialState);
 
-  if (state.success && onSuccess) {
-    onSuccess();
-  }
+  useEffect(() => {
+    if (state.success) {
+      onSuccess?.();
+    }
+  }, [state.success, onSuccess]);
 
   return (
     <form action={formAction} className="flex flex-col gap-4">

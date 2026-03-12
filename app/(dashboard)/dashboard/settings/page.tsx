@@ -29,7 +29,9 @@ export default async function SettingsPage() {
           businessName: user.businessName,
           logoUrl: user.logoUrl,
           accentColor: user.accentColor,
-          slug: user.slug,
+          bookingCode: user.bookingCode,
+          customSlug: user.customSlug,
+          slugChangedAt: user.slugChangedAt?.toISOString() ?? null,
           plan: user.plan,
           email: user.email,
         }}

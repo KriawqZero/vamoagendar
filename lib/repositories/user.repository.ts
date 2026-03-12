@@ -10,8 +10,12 @@ export const userRepository = {
     return prisma.user.findUnique({ where: { email } });
   },
 
-  findBySlug(slug: string) {
-    return prisma.user.findUnique({ where: { slug } });
+  findByBookingCode(bookingCode: string) {
+    return prisma.user.findUnique({ where: { bookingCode } });
+  },
+
+  findByCustomSlug(customSlug: string) {
+    return prisma.user.findUnique({ where: { customSlug } });
   },
 
   create(data: Prisma.UserCreateInput) {
@@ -22,7 +26,11 @@ export const userRepository = {
     return prisma.user.update({ where: { id }, data });
   },
 
-  slugExists(slug: string) {
-    return prisma.user.findUnique({ where: { slug }, select: { id: true } }).then(Boolean);
+  bookingCodeExists(bookingCode: string) {
+    return prisma.user.findUnique({ where: { bookingCode }, select: { id: true } }).then(Boolean);
+  },
+
+  customSlugExists(customSlug: string) {
+    return prisma.user.findUnique({ where: { customSlug }, select: { id: true } }).then(Boolean);
   },
 };
