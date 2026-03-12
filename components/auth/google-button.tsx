@@ -10,14 +10,21 @@ export function GoogleButton() {
   const pathname = usePathname();
 
   async function handleGoogleSignIn() {
+    console.log("[GoogleButton] Starting Google sign-in...");
     setLoading(true);
     try {
-      await authClient.signIn.social({
+      console.log("[GoogleButton] Calling authClient.signIn.social...");
+      const result = await authClient.signIn.social({
         provider: "google",
         callbackURL: "/dashboard",
       });
+      console.log("[GoogleButton] Sign-in result:", result);
     } catch (error: any) {
-      console.error("Google sign-in error:", error);
+      console.error("[GoogleButton] Sign-in error:", error);
+      console.error("[GoogleButton] Error details:", {
+        message: error?.message,
+        stack: error?.stack,
+      });
       setLoading(false);
       
       // Determine error type and redirect with appropriate error code
@@ -33,7 +40,7 @@ export function GoogleButton() {
         errorCode = "account_linking_failed";
       }
       
-      // Redirect to current page with error
+      console.log("[GoogleButton] Redirecting with error code:", errorCode);
       router.push(`${pathname}?error=${errorCode}`);
     }
   }
