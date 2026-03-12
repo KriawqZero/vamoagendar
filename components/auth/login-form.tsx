@@ -1,20 +1,50 @@
 "use client";
 
-import { useActionState } from "react";
-import { loginAction, type AuthState } from "@/lib/actions/auth.actions";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const initialState: AuthState = {};
-
 export function LoginForm() {
-  const [state, formAction, pending] = useActionState(loginAction, initialState);
+  const router = useRouter();
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    try {
+      const result = await authClient.signIn.email({
+        email,
+        password,
+      });
+
+      if (result.error) {
+        setError("Email ou senha incorretos.");
+        setLoading(false);
+        return;
+      }
+
+      router.push("/dashboard");
+      router.refresh();
+    } catch (err) {
+      setError("Erro ao fazer login. Tente novamente.");
+      setLoading(false);
+    }
+  }
 
   return (
-    <form action={formAction} className="flex flex-col gap-4">
-      {state.error && (
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {error && (
         <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
-          {state.error}
+          {error}
         </div>
       )}
 
@@ -25,7 +55,6 @@ export function LoginForm() {
         label="Email"
         placeholder="seu@email.com"
         required
-        error={state.fieldErrors?.email?.[0]}
       />
 
       <Input
@@ -35,10 +64,9 @@ export function LoginForm() {
         label="Senha"
         placeholder="••••••"
         required
-        error={state.fieldErrors?.password?.[0]}
       />
 
-      <Button type="submit" size="lg" loading={pending} className="mt-2 w-full">
+      <Button type="submit" size="lg" loading={loading} className="mt-2 w-full">
         Entrar
       </Button>
     </form>

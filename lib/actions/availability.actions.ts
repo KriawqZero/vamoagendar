@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth-server";
 import { workingHoursRepository } from "@/lib/repositories/working-hours.repository";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -22,7 +22,7 @@ export async function saveScheduleAction(
   _prevState: AvailabilityState,
   formData: FormData
 ): Promise<AvailabilityState> {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) return { error: "Não autorizado." };
 
   const raw = formData.get("schedule") as string;

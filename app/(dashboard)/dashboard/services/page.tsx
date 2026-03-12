@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
 import { serviceRepository } from "@/lib/repositories/service.repository";
 import { userRepository } from "@/lib/repositories/user.repository";
@@ -10,7 +10,7 @@ export const metadata = {
 };
 
 export default async function ServicesPage() {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) redirect("/login");
 
   const [services, user] = await Promise.all([

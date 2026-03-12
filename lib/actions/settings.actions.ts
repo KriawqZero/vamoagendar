@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth-server";
 import { userRepository } from "@/lib/repositories/user.repository";
 import { isValidCustomSlug, isReservedSlug } from "@/lib/utils/slug";
 import { getPlanLimits } from "@/lib/utils/plan";
@@ -10,7 +10,6 @@ import { z } from "zod";
 const profileSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   businessName: z.string().min(2, "Nome do negócio deve ter pelo menos 2 caracteres"),
-  logoUrl: z.string().url("URL inválida").optional().or(z.literal("")),
   accentColor: z.string().regex(/^#[0-9a-fA-F]{6}$/, "Cor inválida"),
 });
 
@@ -24,7 +23,7 @@ export async function updateProfileAction(
   _prevState: SettingsState,
   formData: FormData
 ): Promise<SettingsState> {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) return { error: "Não autorizado." };
 
   const user = await userRepository.findById(session.user.id);
@@ -35,7 +34,6 @@ export async function updateProfileAction(
   const parsed = profileSchema.safeParse({
     name: formData.get("name"),
     businessName: formData.get("businessName"),
-    logoUrl: formData.get("logoUrl") || "",
     accentColor: formData.get("accentColor"),
   });
 
@@ -46,7 +44,6 @@ export async function updateProfileAction(
   await userRepository.update(session.user.id, {
     name: parsed.data.name,
     businessName: parsed.data.businessName,
-    logoUrl: limits.canCustomizeLogo ? (parsed.data.logoUrl || null) : user.logoUrl,
     accentColor: limits.canCustomize ? parsed.data.accentColor : user.accentColor,
   });
 
@@ -59,7 +56,7 @@ export async function updateCustomSlugAction(
   _prevState: SettingsState,
   formData: FormData
 ): Promise<SettingsState> {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) return { error: "Não autorizado." };
 
   const user = await userRepository.findById(session.user.id);

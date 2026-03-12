@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { CalendarDays, Clock, Link2, Zap, Crown, Sparkles, CheckCircle2, ArrowRight } from "lucide-react";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth-server";
 import { PricingTeaser } from "@/components/upsell/pricing-teaser";
 
 export default async function Home() {
-  const session = await auth();
+  const session = await getSession();
   const isAuthenticated = !!session?.user?.id;
 
   return (

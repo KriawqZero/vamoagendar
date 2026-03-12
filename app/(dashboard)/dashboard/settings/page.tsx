@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
 import { userRepository } from "@/lib/repositories/user.repository";
 import { SettingsForm } from "@/components/dashboard/settings-form";
@@ -8,7 +8,7 @@ export const metadata = {
 };
 
 export default async function SettingsPage() {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) redirect("/login");
 
   const user = await userRepository.findById(session.user.id);

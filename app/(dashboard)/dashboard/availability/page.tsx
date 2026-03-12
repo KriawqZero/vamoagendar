@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
 import { workingHoursRepository } from "@/lib/repositories/working-hours.repository";
 import { holidayRepository } from "@/lib/repositories/holiday.repository";
@@ -11,7 +11,7 @@ export const metadata = {
 };
 
 export default async function AvailabilityPage() {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) redirect("/login");
 
   const [workingHours, holidays, exceptions] = await Promise.all([

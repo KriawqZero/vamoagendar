@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
 import { appointmentRepository } from "@/lib/repositories/appointment.repository";
 import { AppointmentCard } from "@/components/dashboard/appointment-card";
@@ -12,7 +12,7 @@ export const metadata = {
 };
 
 export default async function DashboardPage() {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) redirect("/login");
 
   const appointments = await appointmentRepository.findTodayAndUpcoming(session.user.id);

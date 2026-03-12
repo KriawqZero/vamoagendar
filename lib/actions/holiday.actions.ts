@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth-server";
 import { holidayRepository } from "@/lib/repositories/holiday.repository";
 import { exceptionRepository } from "@/lib/repositories/exception.repository";
 import { revalidatePath } from "next/cache";
@@ -27,7 +27,7 @@ export async function createHolidayAction(
   _prevState: HolidayState,
   formData: FormData
 ): Promise<HolidayState> {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) return { error: "Não autorizado." };
 
   const parsed = holidaySchema.safeParse({
@@ -50,7 +50,7 @@ export async function createHolidayAction(
 }
 
 export async function deleteHolidayAction(id: string) {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) return;
   await holidayRepository.delete(id);
   revalidatePath("/dashboard/availability");
@@ -60,7 +60,7 @@ export async function createExceptionAction(
   _prevState: HolidayState,
   formData: FormData
 ): Promise<HolidayState> {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) return { error: "Não autorizado." };
 
   const parsed = exceptionSchema.safeParse({
@@ -87,7 +87,7 @@ export async function createExceptionAction(
 }
 
 export async function deleteExceptionAction(id: string) {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) return;
   await exceptionRepository.delete(id);
   revalidatePath("/dashboard/availability");

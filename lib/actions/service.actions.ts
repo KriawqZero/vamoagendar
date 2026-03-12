@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth-server";
 import { serviceRepository } from "@/lib/repositories/service.repository";
 import { userRepository } from "@/lib/repositories/user.repository";
 import { getPlanLimits } from "@/lib/utils/plan";
@@ -22,7 +22,7 @@ export async function createServiceAction(
   _prevState: ServiceState,
   formData: FormData
 ): Promise<ServiceState> {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) return { error: "Não autorizado." };
 
   const parsed = serviceSchema.safeParse({
@@ -60,7 +60,7 @@ export async function updateServiceAction(
   _prevState: ServiceState,
   formData: FormData
 ): Promise<ServiceState> {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) return { error: "Não autorizado." };
 
   const id = formData.get("id") as string;
@@ -88,7 +88,7 @@ export async function updateServiceAction(
 }
 
 export async function toggleServiceAction(id: string) {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) return;
 
   const service = await serviceRepository.findById(id);
@@ -99,7 +99,7 @@ export async function toggleServiceAction(id: string) {
 }
 
 export async function deleteServiceAction(id: string) {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) return;
 
   const service = await serviceRepository.findById(id);

@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
 import { getSubscriptionInfo } from "@/lib/services/billing.service";
 import { SubscriptionCard } from "@/components/dashboard/subscription-card";
@@ -12,7 +12,7 @@ interface AssinaturaPageProps {
 }
 
 export default async function AssinaturaPage({ searchParams }: AssinaturaPageProps) {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) redirect("/login");
 
   const info = await getSubscriptionInfo(session.user.id);

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   CalendarDays,
   Scissors,
@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
-import { logoutAction } from "@/lib/actions/auth.actions";
+import { authClient } from "@/lib/auth-client";
 import { SidebarUpgradeCard } from "@/components/upsell/sidebar-upgrade-card";
 
 const navItems = [
@@ -27,10 +27,12 @@ const navItems = [
 interface SidebarProps {
   businessName?: string | null;
   plan?: string;
+  logoUrl?: string | null;
 }
 
-export function Sidebar({ businessName, plan }: SidebarProps) {
+export function Sidebar({ businessName, plan, logoUrl }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const isActive = (href: string) => {
@@ -38,20 +40,37 @@ export function Sidebar({ businessName, plan }: SidebarProps) {
     return pathname.startsWith(href);
   };
 
+  async function handleLogout() {
+    await authClient.signOut();
+    router.push("/");
+    router.refresh();
+  }
+
   const nav = (
     <>
       <div className="mb-8 px-3">
-        <div className="flex items-center gap-2">
-          <h2 className="truncate text-lg font-bold text-zinc-100">
-            {businessName || "VamoAgendar"}
-          </h2>
-          {plan === "PRO" && (
-            <span className="rounded-md bg-violet-600/20 px-1.5 py-0.5 text-[10px] font-bold uppercase text-violet-400">
-              Pro
-            </span>
+        <div className="flex items-center gap-3">
+          {logoUrl && (
+            <img
+              src={logoUrl}
+              alt="Logo"
+              className="h-10 w-10 rounded-lg object-cover"
+            />
           )}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <h2 className="truncate text-lg font-bold text-zinc-100">
+                {businessName || "VamoAgendar"}
+              </h2>
+              {plan === "PRO" && (
+                <span className="rounded-md bg-violet-600/20 px-1.5 py-0.5 text-[10px] font-bold uppercase text-violet-400">
+                  Pro
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-zinc-500">Painel do profissional</p>
+          </div>
         </div>
-        <p className="text-xs text-zinc-500">Painel do profissional</p>
       </div>
 
       <nav className="flex flex-1 flex-col gap-1">
@@ -78,15 +97,13 @@ export function Sidebar({ businessName, plan }: SidebarProps) {
 
       {plan === "FREE" && <SidebarUpgradeCard />}
 
-      <form action={logoutAction} className="mt-auto">
-        <button
-          type="submit"
-          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300"
-        >
-          <LogOut size={18} />
-          Sair
-        </button>
-      </form>
+      <button
+        onClick={handleLogout}
+        className="mt-auto flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300"
+      >
+        <LogOut size={18} />
+        Sair
+      </button>
     </>
   );
 

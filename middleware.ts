@@ -1,7 +1,21 @@
-import NextAuth from "next-auth";
-import { authConfig } from "@/lib/auth.config";
+import { NextRequest, NextResponse } from "next/server";
 
-export default NextAuth(authConfig).auth;
+export function middleware(request: NextRequest) {
+  const sessionCookie = request.cookies.get("better-auth.session_token");
+  const { pathname } = request.nextUrl;
+  const isDashboard = pathname.startsWith("/dashboard");
+  const isAuthPage = pathname === "/login" || pathname === "/register";
+
+  if (isDashboard && !sessionCookie) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  if (isAuthPage && sessionCookie) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: ["/dashboard/:path*", "/login", "/register"],

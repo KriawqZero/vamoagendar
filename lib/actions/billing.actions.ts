@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth-server";
 import {
   initiateUpgrade,
   cancelSubscription,
@@ -14,7 +14,7 @@ export type BillingState = {
 };
 
 export async function upgradeAction(): Promise<BillingState> {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) return { error: "Não autorizado." };
 
   const result = await initiateUpgrade(session.user.id);
@@ -28,7 +28,7 @@ export async function upgradeAction(): Promise<BillingState> {
 }
 
 export async function cancelSubscriptionAction(): Promise<BillingState> {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) return { error: "Não autorizado." };
 
   const result = await cancelSubscription(session.user.id);

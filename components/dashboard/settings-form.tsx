@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Copy, ExternalLink, Crown } from "lucide-react";
 import { FeatureLockCard } from "@/components/upsell/feature-lock-card";
+import { LogoUpload } from "@/components/dashboard/logo-upload";
 
 interface SettingsFormProps {
   user: {
@@ -201,16 +202,10 @@ export function SettingsForm({ user }: SettingsFormProps) {
 
           {isPro ? (
             <div className="space-y-1.5">
-              <label htmlFor="settings-logoUrl" className="text-sm font-medium text-zinc-300">
-                URL do logo (opcional)
+              <label className="text-sm font-medium text-zinc-300">
+                Logo personalizado (opcional)
               </label>
-              <Input
-                id="settings-logoUrl"
-                name="logoUrl"
-                defaultValue={user.logoUrl || ""}
-                placeholder="https://exemplo.com/logo.png"
-                error={profileState.fieldErrors?.logoUrl?.[0]}
-              />
+              <LogoUpload currentLogoUrl={user.logoUrl} />
             </div>
           ) : (
             <FeatureLockCard

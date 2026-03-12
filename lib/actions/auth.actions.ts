@@ -1,9 +1,8 @@
 "use server";
 
-import bcrypt from "bcryptjs";
-import { signIn, signOut } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { userRepository } from "@/lib/repositories/user.repository";
-import { generateBookingCode } from "@/lib/utils/slug";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 
 const registerSchema = z.object({
@@ -13,14 +12,10 @@ const registerSchema = z.object({
   businessName: z.string().min(2, "Nome do negócio deve ter pelo menos 2 caracteres"),
 });
 
-const loginSchema = z.object({
-  email: z.string().email("Email inválido"),
-  password: z.string().min(1, "Senha é obrigatória"),
-});
-
 export type AuthState = {
   error?: string;
   fieldErrors?: Record<string, string[]>;
+  success?: boolean;
 };
 
 export async function registerAction(
@@ -46,69 +41,41 @@ export async function registerAction(
     return { error: "Este email já está cadastrado." };
   }
 
-  const passwordHash = await bcrypt.hash(password, 12);
-  const bookingCode = generateBookingCode();
-
-  await userRepository.create({
-    name,
-    email,
-    passwordHash,
-    bookingCode,
-    businessName,
-  });
-
   try {
-    await signIn("credentials", {
-      email,
-      password,
-      redirectTo: "/dashboard",
+    // Create user with Better Auth
+    const result = await auth.api.signUpEmail({
+      body: {
+        name,
+        email,
+        password,
+      },
     });
-  } catch (error: unknown) {
-    if (error && typeof error === "object" && "digest" in error) {
-      const digestError = error as { digest: string };
-      if (digestError.digest?.startsWith("NEXT_REDIRECT")) {
-        throw error;
-      }
-    }
-    return { error: "Erro ao fazer login após registro." };
-  }
 
-  return {};
+    if (!result || !result.user) {
+      return { error: "Erro ao criar conta." };
+    }
+
+    // Update user with businessName (bookingCode is set by databaseHooks)
+    await userRepository.update(result.user.id, {
+      businessName,
+    });
+
+    return { success: true };
+  } catch (error: unknown) {
+    console.error("Register error:", error);
+    return { error: "Erro ao criar conta. Tente novamente." };
+  }
 }
 
+// Note: Login is now handled client-side via authClient.signIn.email()
+// This action is kept for compatibility but not used
 export async function loginAction(
   _prevState: AuthState,
   formData: FormData
 ): Promise<AuthState> {
-  const raw = {
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
-  };
-
-  const parsed = loginSchema.safeParse(raw);
-  if (!parsed.success) {
-    return { fieldErrors: parsed.error.flatten().fieldErrors };
-  }
-
-  try {
-    await signIn("credentials", {
-      email: parsed.data.email,
-      password: parsed.data.password,
-      redirectTo: "/dashboard",
-    });
-  } catch (error: unknown) {
-    if (error && typeof error === "object" && "digest" in error) {
-      const digestError = error as { digest: string };
-      if (digestError.digest?.startsWith("NEXT_REDIRECT")) {
-        throw error;
-      }
-    }
-    return { error: "Email ou senha incorretos." };
-  }
-
-  return {};
+  return { error: "Use o formulário de login." };
 }
 
 export async function logoutAction() {
-  await signOut({ redirectTo: "/" });
+  redirect("/");
 }

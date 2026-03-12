@@ -1,4 +1,5 @@
 import { RegisterForm } from "@/components/auth/register-form";
+import { GoogleButton } from "@/components/auth/google-button";
 import Link from "next/link";
 
 export const metadata = {
@@ -19,6 +20,19 @@ export default function RegisterPage() {
         </div>
 
         <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+          <GoogleButton />
+          
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-zinc-200 dark:border-zinc-800"></div>
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white px-2 text-zinc-500 dark:bg-zinc-900 dark:text-zinc-400">
+                ou
+              </span>
+            </div>
+          </div>
+
           <RegisterForm />
         </div>
 
