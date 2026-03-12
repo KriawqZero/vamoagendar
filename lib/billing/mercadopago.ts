@@ -1,3 +1,4 @@
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { MercadoPagoConfig, Preference, PreApproval } from "mercadopago";
 import type {
   BillingProvider,
@@ -100,7 +101,7 @@ export class MercadoPagoProvider implements BillingProvider {
 
   async parseWebhookEvent(
     body: unknown,
-    _headers: Record<string, string>
+    headers: Record<string, string>
   ): Promise<WebhookEvent> {
     const payload = body as Record<string, unknown>;
     const type = payload.type as string | undefined;
@@ -108,10 +109,54 @@ export class MercadoPagoProvider implements BillingProvider {
     const data = payload.data as Record<string, unknown> | undefined;
 
     console.log("[MercadoPago Webhook]", { type, action, data });
+    const secret = process.env.MERCADO_PAGO_WEBHOOK_SECRET;
+    if (!secret) {
+      throw new Error("MERCADO_PAGO_WEBHOOK_SECRET is not configured");
+    }
 
-    // TODO: Validate webhook signature using MERCADO_PAGO_WEBHOOK_SECRET
-    // const signature = headers["x-signature"];
-    // const requestId = headers["x-request-id"];
+    const signature = headers["x-signature"];
+    const requestId = headers["x-request-id"];
+    if (!signature || !requestId) {
+      throw new Error("Missing Mercado Pago webhook signature headers");
+    }
+
+    let ts = "";
+    let v1 = "";
+    for (const part of signature.split(",")) {
+      const [rawKey, rawValue] = part.split("=", 2);
+      const key = rawKey?.trim();
+      const value = rawValue?.trim();
+
+      if (key === "ts" && value) ts = value;
+      if (key === "v1" && value) v1 = value;
+    }
+
+    if (!ts || !v1) {
+      throw new Error("Invalid Mercado Pago x-signature header");
+    }
+
+    const dataId = String(data?.id ?? "").trim();
+    const normalizedDataId =
+      dataId && /^[a-z0-9]+$/i.test(dataId) ? dataId.toLowerCase() : dataId;
+    const manifest = [
+      normalizedDataId ? `id:${normalizedDataId};` : "",
+      requestId ? `request-id:${requestId};` : "",
+      `ts:${ts};`,
+    ].join("");
+
+    const expectedSignature = createHmac("sha256", secret)
+      .update(manifest)
+      .digest("hex");
+
+    const provided = Buffer.from(v1, "hex");
+    const expected = Buffer.from(expectedSignature, "hex");
+    if (
+      provided.length === 0 ||
+      provided.length !== expected.length ||
+      !timingSafeEqual(provided, expected)
+    ) {
+      throw new Error("Invalid Mercado Pago webhook signature");
+    }
 
     if (type === "subscription_preapproval") {
       const externalId = data?.id as string | undefined;
