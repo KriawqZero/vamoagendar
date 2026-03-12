@@ -16,6 +16,10 @@ export type AuthState = {
   error?: string;
   fieldErrors?: Record<string, string[]>;
   success?: boolean;
+  credentials?: {
+    email: string;
+    password: string;
+  };
 };
 
 export async function registerAction(
@@ -62,7 +66,10 @@ export async function registerAction(
       bookingCode: user?.bookingCode || undefined, // Keep existing if set
     });
 
-    return { success: true };
+    return { 
+      success: true,
+      credentials: { email, password }
+    };
   } catch (error: unknown) {
     console.error("Register error:", error);
     return { error: "Erro ao criar conta. Tente novamente." };
