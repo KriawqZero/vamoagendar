@@ -143,7 +143,7 @@ export function SubscriptionCard({ plan, subscription, statusParam }: Subscripti
           </div>
           
           <p className="mt-2 text-xs text-zinc-500">
-            Menos de R$ 0,33 por dia — o preço de um cafezinho
+            Menos de R$ 0,33 por dia, o preço de uma bala
           </p>
 
           <ul className="mt-4 space-y-2">
