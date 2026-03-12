@@ -35,6 +35,7 @@ export const auth = betterAuth({
   ],
   hooks: {
     after: createAuthMiddleware(async ({ context }) => {
+      console.log("Better Auth Hook - After sign up:", context.user.email);
       await prisma.user.update({
         where: { id: context.user.id },
         data: {

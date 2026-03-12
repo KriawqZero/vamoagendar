@@ -11,7 +11,19 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const session = await getSession();
-  if (!session?.user?.id) redirect("/login");
+  
+  // Debug logging
+  console.log("Dashboard Layout - Session:", {
+    hasSession: !!session,
+    hasUser: !!session?.user,
+    userId: session?.user?.id,
+    userEmail: session?.user?.email,
+  });
+  
+  if (!session?.user?.id) {
+    console.log("Dashboard Layout - No session, redirecting to login");
+    redirect("/login");
+  }
 
   let user = await userRepository.findById(session.user.id);
   
