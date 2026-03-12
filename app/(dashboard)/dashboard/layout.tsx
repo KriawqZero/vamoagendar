@@ -13,7 +13,17 @@ export default async function DashboardLayout({
   const session = await getSession();
   if (!session?.user?.id) redirect("/login");
 
-  const user = await userRepository.findById(session.user.id);
+  let user = await userRepository.findById(session.user.id);
+  
+  // Fallback: Generate bookingCode if missing (for OAuth users created before the fix)
+  if (user && !user.bookingCode) {
+    const { generateBookingCode } = await import("@/lib/utils/slug");
+    await userRepository.update(user.id, {
+      bookingCode: generateBookingCode(),
+    });
+    user = await userRepository.findById(session.user.id);
+  }
+  
   const isFree = user?.plan === "FREE";
   const needsProfileCompletion = !user?.businessName;
 
