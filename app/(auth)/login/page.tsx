@@ -1,6 +1,8 @@
 import { LoginForm } from "@/components/auth/login-form";
 import { GoogleButton } from "@/components/auth/google-button";
+import { OAuthErrorBanner } from "@/components/auth/oauth-error-banner";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export const metadata = {
   title: "Entrar | VamoAgendar",
@@ -18,6 +20,10 @@ export default function LoginPage() {
             Entre na sua conta
           </p>
         </div>
+
+        <Suspense fallback={null}>
+          <OAuthErrorBanner />
+        </Suspense>
 
         <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
           <GoogleButton />

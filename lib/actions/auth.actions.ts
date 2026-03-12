@@ -55,9 +55,11 @@ export async function registerAction(
       return { error: "Erro ao criar conta." };
     }
 
-    // Update user with businessName (bookingCode is set by databaseHooks)
+    // Update user with businessName and bookingCode (if not set by databaseHooks)
+    const user = await userRepository.findById(result.user.id);
     await userRepository.update(result.user.id, {
       businessName,
+      bookingCode: user?.bookingCode || undefined, // Keep existing if set
     });
 
     return { success: true };

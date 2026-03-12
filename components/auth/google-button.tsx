@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
 export function GoogleButton() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   async function handleGoogleSignIn() {
     setLoading(true);
@@ -13,9 +16,25 @@ export function GoogleButton() {
         provider: "google",
         callbackURL: "/dashboard",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Google sign-in error:", error);
       setLoading(false);
+      
+      // Determine error type and redirect with appropriate error code
+      let errorCode = "oauth_error";
+      
+      if (error?.message?.includes("email")) {
+        errorCode = "email_already_in_use";
+      } else if (error?.message?.includes("create")) {
+        errorCode = "unable_to_create_user";
+      } else if (error?.message?.includes("credentials")) {
+        errorCode = "invalid_credentials";
+      } else if (error?.message?.includes("linking")) {
+        errorCode = "account_linking_failed";
+      }
+      
+      // Redirect to current page with error
+      router.push(`${pathname}?error=${errorCode}`);
     }
   }
 

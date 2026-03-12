@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { generateBookingCode } from "@/lib/utils/slug";
 
 export const auth = betterAuth({
+  baseURL: process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
@@ -28,16 +29,20 @@ export const auth = betterAuth({
       maxAge: 5 * 60, // 5 minutes
     },
   },
+  trustedOrigins: [
+    process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  ],
   databaseHooks: {
     user: {
       create: {
-        after: async (user) => {
+        before: async (user) => {
           // Generate bookingCode for all new users (including Google signups)
-          const bookingCode = generateBookingCode();
-          await prisma.user.update({
-            where: { id: user.id },
-            data: { bookingCode },
-          });
+          return {
+            data: {
+              ...user,
+              bookingCode: generateBookingCode(),
+            },
+          };
         },
       },
     },

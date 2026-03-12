@@ -45,7 +45,7 @@ model User {
 
   // App-specific fields
   passwordHash  String?
-  bookingCode   String    @unique
+  bookingCode   String?   @unique
   customSlug    String?   @unique
   slugChangedAt DateTime?
   plan          Plan      @default(FREE)
