@@ -36,8 +36,14 @@ export function PricingTeaser() {
       </div>
 
       <div className="rounded-xl border-2 border-violet-500/50 bg-violet-500/5 p-4">
-        <h3 className="text-sm font-semibold text-violet-400">Pro</h3>
-        <p className="mt-1 text-2xl font-bold text-zinc-100">R$ 9,90</p>
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-violet-400">Pro</h3>
+          <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-400">-50%</span>
+        </div>
+        <div className="mt-1 flex items-baseline gap-2">
+          <p className="text-2xl font-bold text-zinc-100">R$ 9,90</p>
+          <p className="text-sm text-zinc-600 line-through">R$ 19,90</p>
+        </div>
         <p className="text-xs text-zinc-400">por mês</p>
         <ul className="mt-4 space-y-2">
           {features.map((f) => (

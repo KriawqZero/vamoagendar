@@ -20,7 +20,7 @@ export function UpgradeBanner() {
             Desbloqueie todo o potencial do VamoAgendar
           </p>
           <p className="mt-0.5 text-xs text-zinc-400">
-            Serviços ilimitados, link personalizado e muito mais por R$ 9,90/mês
+            Serviços ilimitados, link personalizado e muito mais por <span className="font-semibold text-emerald-400">R$ 9,90/mês</span> <span className="text-zinc-600 line-through">R$ 19,90</span>
           </p>
         </div>
         <Link

@@ -242,7 +242,7 @@ export default async function Home() {
                 Destaque sua marca com o plano Pro
               </h2>
               <p className="mx-auto mt-4 max-w-2xl text-base text-zinc-400">
-                Por apenas <span className="font-semibold text-violet-400">R$ 9,90/mês</span>, tenha acesso a recursos profissionais que fazem a diferença
+                Por apenas <span className="font-semibold text-emerald-400">R$ 9,90/mês</span> <span className="text-zinc-600 line-through">R$ 19,90</span> (50% OFF), tenha acesso a recursos profissionais que fazem a diferença
               </p>
 
               <div className="mx-auto mt-8 grid max-w-2xl gap-4 text-left sm:grid-cols-2">

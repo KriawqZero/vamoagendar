@@ -5,7 +5,7 @@ import { upgradeAction, cancelSubscriptionAction } from "@/lib/actions/billing.a
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Modal } from "@/components/ui/modal";
-import { Check, Crown, AlertTriangle } from "lucide-react";
+import { Check, Crown, AlertTriangle, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 interface SubscriptionCardProps {
@@ -95,7 +95,11 @@ export function SubscriptionCard({ plan, subscription, statusParam }: Subscripti
               </h2>
             </div>
             {isPro ? (
-              <p className="mt-1 text-sm text-zinc-400">R$ 9,90/mês — Todos os recursos disponíveis</p>
+              <div className="mt-1 flex items-baseline gap-2">
+                <p className="text-sm text-zinc-400">R$ 9,90/mês</p>
+                <span className="text-xs text-zinc-600 line-through">R$ 19,90</span>
+                <span className="text-xs text-emerald-400">(-50%)</span>
+              </div>
             ) : (
               <p className="mt-1 text-sm text-zinc-500">Até 2 serviços, link automático</p>
             )}
@@ -127,10 +131,18 @@ export function SubscriptionCard({ plan, subscription, statusParam }: Subscripti
             <Crown size={20} className="text-violet-400" />
             <h3 className="text-lg font-semibold text-zinc-100">Destaque sua marca com o Pro</h3>
           </div>
-          <p className="mt-2 text-sm text-zinc-400">
-            Desbloqueie todos os recursos por apenas <span className="font-semibold text-violet-400">R$ 9,90/mês</span>
-          </p>
-          <p className="mt-1 text-xs text-zinc-500">
+          <div className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-400">
+            <Sparkles size={12} />
+            Oferta especial - 50% OFF
+          </div>
+          <div className="mt-2 flex items-baseline gap-2">
+            <p className="text-sm text-zinc-400">
+              Desbloqueie todos os recursos por apenas <span className="font-semibold text-emerald-400">R$ 9,90/mês</span>
+            </p>
+            <span className="text-sm text-zinc-600 line-through">R$ 19,90</span>
+          </div>
+          
+          <p className="mt-2 text-xs text-zinc-500">
             Menos de R$ 0,33 por dia — o preço de um cafezinho
           </p>
 
@@ -150,7 +162,7 @@ export function SubscriptionCard({ plan, subscription, statusParam }: Subscripti
 
           <div className="mt-6 rounded-xl bg-zinc-900/50 p-3">
             <p className="text-xs text-zinc-500">
-              💡 <span className="font-medium text-zinc-400">Profissionais que usam o Pro</span> relatam mais confiança dos clientes e agenda mais cheia
+              <span className="font-medium text-zinc-400">Profissionais que usam o Pro</span> relatam mais confiança dos clientes e agenda mais cheia
             </p>
           </div>
 
@@ -166,6 +178,11 @@ export function SubscriptionCard({ plan, subscription, statusParam }: Subscripti
               Ver detalhes
             </Link>
           </div>
+          <p className="mt-3 text-center text-xs text-zinc-600">
+            <Link href="/faturamento" className="hover:text-zinc-500">
+              Como funciona o faturamento?
+            </Link>
+          </p>
         </div>
       )}
 
@@ -206,7 +223,10 @@ export function SubscriptionCard({ plan, subscription, statusParam }: Subscripti
             <h3 className="text-sm font-semibold text-zinc-400">Cancelar assinatura</h3>
           </div>
           <p className="mt-2 text-xs text-zinc-600">
-            Ao cancelar, seu plano voltará para o gratuito. Você perderá acesso aos recursos Pro.
+            Ao cancelar, seu plano voltará para o gratuito. Você perderá acesso aos recursos Pro.{" "}
+            <Link href="/faturamento#cancelamento" className="text-zinc-500 hover:text-zinc-400">
+              Saiba mais sobre cancelamento
+            </Link>
           </p>
           <button
             onClick={() => setShowCancelModal(true)}

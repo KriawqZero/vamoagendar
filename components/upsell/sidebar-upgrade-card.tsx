@@ -12,7 +12,7 @@ export function SidebarUpgradeCard() {
         <p className="text-sm font-semibold text-zinc-100">Seja Pro</p>
       </div>
       <p className="mt-1 text-xs text-zinc-400">
-        Recursos ilimitados por R$ 9,90/mês
+        Recursos ilimitados por <span className="font-semibold text-emerald-400">R$ 9,90/mês</span> <span className="line-through">R$ 19,90</span>
       </p>
     </Link>
   );
