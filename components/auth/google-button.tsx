@@ -4,43 +4,41 @@ import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
+type SignInError = {
+  message?: string;
+  stack?: string;
+};
+
 export function GoogleButton() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
   async function handleGoogleSignIn() {
-    console.log("[GoogleButton] Starting Google sign-in...");
     setLoading(true);
     try {
-      console.log("[GoogleButton] Calling authClient.signIn.social...");
-      const result = await authClient.signIn.social({
+      await authClient.signIn.social({
         provider: "google",
         callbackURL: "/dashboard",
       });
-      console.log("[GoogleButton] Sign-in result:", result);
-    } catch (error: any) {
-      console.error("[GoogleButton] Sign-in error:", error);
-      console.error("[GoogleButton] Error details:", {
-        message: error?.message,
-        stack: error?.stack,
-      });
+    } catch (error) {
+      const signInError = error as SignInError;
       setLoading(false);
       
       // Determine error type and redirect with appropriate error code
       let errorCode = "oauth_error";
+      const message = signInError.message || "";
       
-      if (error?.message?.includes("email")) {
+      if (message.includes("email")) {
         errorCode = "email_already_in_use";
-      } else if (error?.message?.includes("create")) {
+      } else if (message.includes("create")) {
         errorCode = "unable_to_create_user";
-      } else if (error?.message?.includes("credentials")) {
+      } else if (message.includes("credentials")) {
         errorCode = "invalid_credentials";
-      } else if (error?.message?.includes("linking")) {
+      } else if (message.includes("linking")) {
         errorCode = "account_linking_failed";
       }
       
-      console.log("[GoogleButton] Redirecting with error code:", errorCode);
       router.push(`${pathname}?error=${errorCode}`);
     }
   }
