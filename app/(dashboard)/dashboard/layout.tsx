@@ -14,25 +14,11 @@ export default async function DashboardLayout({
   
   const session = await getSession();
   
-  console.log("[DashboardLayout] Session check:", {
-    hasSession: !!session,
-    hasUser: !!session?.user,
-    hasUserId: !!session?.user?.id,
-    userId: session?.user?.id,
-  });
-  
   if (!session?.user?.id) {
-    console.log("[DashboardLayout] No valid session, redirecting to /login");
     redirect("/login");
   }
 
-  console.log("[DashboardLayout] Valid session, fetching user from DB...");
   let user = await userRepository.findById(session.user.id);
-  console.log("[DashboardLayout] User from DB:", {
-    found: !!user,
-    hasBookingCode: !!user?.bookingCode,
-    email: user?.email,
-  });
   
   // Fallback: Generate bookingCode if missing (for OAuth users created before the fix)
   if (user && !user.bookingCode) {
