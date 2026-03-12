@@ -1,7 +1,7 @@
 "use server";
 
 import bcrypt from "bcryptjs";
-import { signIn } from "@/lib/auth";
+import { signIn, signOut } from "@/lib/auth";
 import { userRepository } from "@/lib/repositories/user.repository";
 import { generateSlug } from "@/lib/utils/slug";
 import { z } from "zod";
@@ -107,4 +107,8 @@ export async function loginAction(
   }
 
   return {};
+}
+
+export async function logoutAction() {
+  await signOut({ redirectTo: "/" });
 }

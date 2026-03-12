@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
+import { logoutAction } from "@/lib/actions/auth.actions";
 
 const navItems = [
   { href: "/dashboard", label: "Agenda", icon: CalendarDays },
@@ -74,7 +75,7 @@ export function Sidebar({ businessName, plan }: SidebarProps) {
         })}
       </nav>
 
-      <form action="/api/auth/signout" method="POST" className="mt-auto">
+      <form action={logoutAction} className="mt-auto">
         <button
           type="submit"
           className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300"
