@@ -69,15 +69,6 @@ export async function registerAction(
   }
 }
 
-// Note: Login is now handled client-side via authClient.signIn.email()
-// This action is kept for compatibility but not used
-export async function loginAction(
-  _prevState: AuthState,
-  formData: FormData
-): Promise<AuthState> {
-  return { error: "Use o formulário de login." };
-}
-
 export async function logoutAction() {
   redirect("/");
 }
