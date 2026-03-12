@@ -12,16 +12,7 @@ export default async function DashboardLayout({
 }) {
   const session = await getSession();
   
-  // Debug logging
-  console.log("Dashboard Layout - Session:", {
-    hasSession: !!session,
-    hasUser: !!session?.user,
-    userId: session?.user?.id,
-    userEmail: session?.user?.email,
-  });
-  
   if (!session?.user?.id) {
-    console.log("Dashboard Layout - No session, redirecting to login");
     redirect("/login");
   }
 
