@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Check, X, Zap, Crown, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
+import { getSession } from "@/lib/auth-server";
 
 export const metadata: Metadata = {
   title: "Planos | VamoAgendar",
@@ -30,7 +31,10 @@ function FeatureValue({ value }: { value: boolean | string }) {
   );
 }
 
-export default function PlanosPage() {
+export default async function PlanosPage() {
+    const session = await getSession();
+    const isAuthenticated = !!session?.user?.id;
+
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950">
       {/* Nav */}
@@ -39,6 +43,14 @@ export default function PlanosPage() {
           <Link href="/" className="text-sm font-bold text-zinc-100">
             VamoAgendar
           </Link>
+          {isAuthenticated ? (
+            <Link
+              href="/dashboard"
+              className="rounded-lg px-3 py-1.5 text-sm text-zinc-400 hover:text-zinc-200"
+            >
+              Dashboard
+            </Link>
+          ) : (
           <div className="flex items-center gap-3">
             <Link
               href="/login"
@@ -53,6 +65,7 @@ export default function PlanosPage() {
               Criar conta
             </Link>
           </div>
+          )}
         </div>
       </header>
 
