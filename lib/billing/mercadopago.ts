@@ -107,6 +107,8 @@ export class MercadoPagoProvider implements BillingProvider {
     const action = payload.action as string | undefined;
     const data = payload.data as Record<string, unknown> | undefined;
 
+    console.log("[MercadoPago Webhook]", { type, action, data });
+
     // TODO: Validate webhook signature using MERCADO_PAGO_WEBHOOK_SECRET
     // const signature = headers["x-signature"];
     // const requestId = headers["x-request-id"];
@@ -130,10 +132,14 @@ export class MercadoPagoProvider implements BillingProvider {
     }
 
     if (type === "payment") {
+      // For payment events, we need to fetch the payment details to get external_reference
+      const paymentId = data?.id as string | undefined;
+      console.log("[MercadoPago Webhook] Payment event, ID:", paymentId);
+      
       if (action === "payment.created" || action === "payment.updated") {
         return {
           type: "payment.approved",
-          externalSubscriptionId: data?.id as string | undefined,
+          externalSubscriptionId: paymentId,
           rawPayload: payload,
         };
       }

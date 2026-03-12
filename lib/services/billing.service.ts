@@ -55,20 +55,68 @@ export async function initiateUpgrade(userId: string): Promise<UpgradeResult> {
 }
 
 export async function processWebhookEvent(event: WebhookEvent): Promise<void> {
-  if (event.type === "unknown") return;
+  console.log("[processWebhookEvent] Event:", event.type, event.externalSubscriptionId);
+  
+  if (event.type === "unknown") {
+    console.log("[processWebhookEvent] Unknown event type, skipping");
+    return;
+  }
 
-  const externalId = event.externalSubscriptionId;
-  if (!externalId) return;
+  const paymentId = event.externalSubscriptionId;
+  if (!paymentId) {
+    console.log("[processWebhookEvent] No payment ID, skipping");
+    return;
+  }
 
-  const subscription = await subscriptionRepository.findByMpSubscriptionId(externalId);
+  // For payment events, we need to fetch payment details from Mercado Pago to get external_reference (userId)
+  if (event.type === "payment.approved") {
+    try {
+      const { MercadoPagoConfig, Payment } = await import("mercadopago");
+      const client = new MercadoPagoConfig({ 
+        accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN! 
+      });
+      const payment = new Payment(client);
+      const paymentData = await payment.get({ id: paymentId });
+      
+      const userId = paymentData.external_reference;
+      console.log("[processWebhookEvent] Payment approved for user:", userId);
+      
+      if (!userId) {
+        console.warn("[processWebhookEvent] No external_reference in payment");
+        return;
+      }
+
+      const subscription = await subscriptionRepository.findByUserId(userId);
+      if (!subscription) {
+        console.warn("[processWebhookEvent] No subscription found for user:", userId);
+        return;
+      }
+
+      // Activate subscription
+      await subscriptionRepository.update(subscription.id, {
+        status: "ACTIVE",
+        currentPeriodStart: new Date(),
+        currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 days
+        mpSubscriptionId: paymentId, // Store payment ID for reference
+      });
+      await userRepository.update(userId, { plan: "PRO" });
+      console.log("[processWebhookEvent] Subscription activated for user:", userId);
+      return;
+    } catch (error) {
+      console.error("[processWebhookEvent] Error processing payment webhook:", error);
+      return;
+    }
+  }
+
+  // For subscription events (PreApproval), use the old logic
+  const subscription = await subscriptionRepository.findByMpSubscriptionId(paymentId);
   if (!subscription) {
-    console.warn("Webhook for unknown subscription:", externalId);
+    console.warn("[processWebhookEvent] Webhook for unknown subscription:", paymentId);
     return;
   }
 
   switch (event.type) {
-    case "subscription.created":
-    case "payment.approved": {
+    case "subscription.created": {
       await subscriptionRepository.update(subscription.id, {
         status: "ACTIVE",
         currentPeriodStart: new Date(),
@@ -81,7 +129,7 @@ export async function processWebhookEvent(event: WebhookEvent): Promise<void> {
     case "subscription.updated": {
       // Fetch latest status from provider
       const provider = getBillingProvider();
-      const info = await provider.getSubscription(externalId);
+      const info = await provider.getSubscription(paymentId);
       if (info) {
         const statusMap: Record<string, "ACTIVE" | "PAST_DUE" | "CANCELED" | "INACTIVE"> = {
           active: "ACTIVE",
