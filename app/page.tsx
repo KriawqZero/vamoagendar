@@ -1,13 +1,26 @@
 import Link from "next/link";
 import { CalendarDays, Clock, Link2, Zap } from "lucide-react";
+import { auth } from "@/lib/auth";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+  const isAuthenticated = !!session?.user?.id;
+
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950">
       {/* Nav */}
       <header className="border-b border-zinc-900">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
           <span className="text-sm font-bold text-zinc-100">VamoAgendar</span>
+
+          {isAuthenticated ? (
+            <Link
+              href="/dashboard"
+              className="rounded-lg px-3 py-1.5 text-sm text-zinc-400 hover:text-zinc-200"
+            >
+              Dashboard
+            </Link>
+          ) : (
           <div className="flex items-center gap-3">
             <Link
               href="/planos"
@@ -28,6 +41,7 @@ export default function Home() {
               Criar conta
             </Link>
           </div>
+          )}
         </div>
       </header>
 
@@ -50,18 +64,29 @@ export default function Home() {
           </p>
 
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <Link
-              href="/register"
-              className="w-full rounded-xl bg-violet-600 px-6 py-3 text-sm font-medium text-white hover:bg-violet-700 sm:w-auto"
-            >
-              Começar grátis
-            </Link>
-            <Link
-              href="/login"
-              className="w-full rounded-xl border border-zinc-800 px-6 py-3 text-sm font-medium text-zinc-300 hover:bg-zinc-900 sm:w-auto"
-            >
-              Já tenho conta
-            </Link>
+            {isAuthenticated ? (
+              <Link
+                href="/dashboard"
+                className="w-full rounded-xl bg-violet-600 px-6 py-3 text-sm font-medium text-white hover:bg-violet-700 sm:w-auto"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/register"
+                  className="w-full rounded-xl bg-violet-600 px-6 py-3 text-sm font-medium text-white hover:bg-violet-700 sm:w-auto"
+                >
+                  Começar grátis
+                </Link>
+                <Link
+                  href="/login"
+                  className="w-full rounded-xl border border-zinc-800 px-6 py-3 text-sm font-medium text-zinc-300 hover:bg-zinc-900 sm:w-auto"
+                >
+                  Já tenho conta
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Example link */}

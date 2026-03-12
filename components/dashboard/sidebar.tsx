@@ -120,7 +120,7 @@ export function Sidebar({ businessName, plan }: SidebarProps) {
       </aside>
 
       {/* Desktop sidebar */}
-      <aside className="hidden h-screen w-64 flex-col border-r border-zinc-800 bg-zinc-950 p-4 lg:flex">
+      <aside className="hidden h-screen w-64 shrink-0 flex-col border-r border-zinc-800 bg-zinc-950 p-4 lg:sticky lg:top-0 lg:flex">
         {nav}
       </aside>
     </>
