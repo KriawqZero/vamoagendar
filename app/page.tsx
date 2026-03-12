@@ -12,7 +12,22 @@ export default async function Home() {
       {/* Nav */}
       <header className="border-b border-zinc-900">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-          <span className="text-sm font-bold text-zinc-100">VamoAgendar</span>
+          <div className="flex items-center gap-2">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="text-violet-500"
+            >
+              <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2" />
+              <path d="M3 10h18" stroke="currentColor" strokeWidth="2" />
+              <path d="M8 2v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <path d="M16 2v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+            <span className="font-playfair text-lg font-bold text-zinc-100" style={{ fontFamily: 'var(--font-playfair)' }}>vamoagendar</span>
+          </div>
 
           {isAuthenticated ? (
             <Link
@@ -301,7 +316,7 @@ export default async function Home() {
         <div className="mx-auto max-w-5xl">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <div className="text-center sm:text-left">
-              <p className="text-sm font-semibold text-zinc-400">VamoAgendar</p>
+              <p className="text-sm font-semibold text-zinc-400" style={{ fontFamily: 'var(--font-playfair)' }}>vamoagendar</p>
               <p className="mt-1 text-xs text-zinc-600">
                 Agendamento online simples e profissional
               </p>
