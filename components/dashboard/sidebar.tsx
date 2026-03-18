@@ -15,6 +15,7 @@ import {
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { SidebarUpgradeCard } from "@/components/upsell/sidebar-upgrade-card";
+import { BrandMark } from "@/components/brand/brand";
 
 const navItems = [
   { href: "/dashboard", label: "Agenda", icon: CalendarDays },
@@ -50,12 +51,16 @@ export function Sidebar({ businessName, plan, logoUrl }: SidebarProps) {
     <>
       <div className="mb-8 px-3">
         <div className="flex items-center gap-3">
-          {logoUrl && (
+          {logoUrl ? (
             <img
               src={logoUrl}
               alt="Logo"
               className="h-10 w-10 rounded-lg object-cover"
             />
+          ) : (
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-900">
+              <BrandMark size={22} />
+            </div>
           )}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
@@ -111,9 +116,12 @@ export function Sidebar({ businessName, plan, logoUrl }: SidebarProps) {
     <>
       {/* Mobile header */}
       <div className="fixed left-0 right-0 top-0 z-40 flex h-14 items-center justify-between border-b border-zinc-800 bg-zinc-950 px-4 lg:hidden">
-        <h2 className="text-sm font-bold text-zinc-100">
-          {businessName || "VamoAgendar"}
-        </h2>
+        <div className="flex items-center gap-2">
+          <BrandMark size={18} />
+          <h2 className="text-sm font-bold text-zinc-100">
+            {businessName || "VamoAgendar"}
+          </h2>
+        </div>
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           className="rounded-lg p-2 text-zinc-400 hover:bg-zinc-800"

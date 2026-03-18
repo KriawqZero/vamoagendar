@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, CreditCard, Calendar, XCircle, Shield, HelpCircle } from "lucide-react";
 import type { Metadata } from "next";
+import { BrandLink } from "@/components/brand/brand";
 
 export const metadata: Metadata = {
   title: "Faturamento e Políticas | VamoAgendar",
@@ -13,9 +14,7 @@ export default function FaturamentoPage() {
       {/* Nav */}
       <header className="border-b border-zinc-900">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-          <Link href="/" className="text-sm font-bold text-zinc-100">
-            VamoAgendar
-          </Link>
+          <BrandLink href="/" className="inline-flex items-center" aria-label="VamoAgendar" />
           <div className="flex items-center gap-3">
             <Link
               href="/login"

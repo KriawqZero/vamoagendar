@@ -4,6 +4,7 @@ import { userRepository } from "@/lib/repositories/user.repository";
 import { serviceRepository } from "@/lib/repositories/service.repository";
 import { BookingWizard } from "@/components/booking/booking-wizard";
 import type { Metadata } from "next";
+import { BrandMark } from "@/components/brand/brand";
 
 interface BookingPageProps {
   params: Promise<{ customSlug: string }>;
@@ -79,7 +80,10 @@ export default async function BookingPage({ params }: BookingPageProps) {
         <p className="mt-8 text-center text-xs text-zinc-700">
           Agendamento por{" "}
           <Link href="/" className="text-zinc-500 hover:text-zinc-400">
-            VamoAgendar
+            <span className="inline-flex items-center gap-2">
+              <BrandMark size={14} />
+              <span>VamoAgendar</span>
+            </span>
           </Link>
         </p>
       </div>

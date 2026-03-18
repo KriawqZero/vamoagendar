@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Check, X, Zap, Crown, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
 import { getSession } from "@/lib/auth-server";
+import { BrandLink } from "@/components/brand/brand";
 
 export const metadata: Metadata = {
   title: "Planos | VamoAgendar",
@@ -40,9 +41,7 @@ export default async function PlanosPage() {
       {/* Nav */}
       <header className="border-b border-zinc-900">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-          <Link href="/" className="text-sm font-bold text-zinc-100">
-            VamoAgendar
-          </Link>
+          <BrandLink href="/" className="inline-flex items-center" aria-label="VamoAgendar" />
           {isAuthenticated ? (
             <Link
               href="/dashboard"

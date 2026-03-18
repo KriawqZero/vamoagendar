@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ReactNode } from "react";
+import { BrandLink, BrandLogo } from "@/components/brand/brand";
 
 interface NicheLandingLayoutProps {
   children: ReactNode;
@@ -11,9 +12,11 @@ export function NicheLandingLayout({ children }: NicheLandingLayoutProps) {
       {/* Nav */}
       <header className="border-b border-zinc-900">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-          <Link href="/" className="text-sm font-bold text-zinc-100">
-            VamoAgendar
-          </Link>
+          <BrandLink
+            href="/"
+            className="inline-flex items-center"
+            aria-label="VamoAgendar"
+          />
           <div className="flex items-center gap-3">
             <Link
               href="/login"
@@ -40,7 +43,9 @@ export function NicheLandingLayout({ children }: NicheLandingLayoutProps) {
         <div className="mx-auto max-w-5xl">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <div className="text-center sm:text-left">
-              <p className="text-sm font-semibold text-zinc-400">VamoAgendar</p>
+              <div className="flex items-center justify-center sm:justify-start">
+                <BrandLogo height={18} />
+              </div>
               <p className="mt-1 text-xs text-zinc-600">
                 Agendamento online simples e profissional
               </p>
