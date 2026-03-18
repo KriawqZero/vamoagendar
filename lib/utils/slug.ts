@@ -29,6 +29,9 @@ export const RESERVED_SLUGS = new Set([
   "static",
   "public",
   "assets",
+  "barbeiros",
+  "psicologos",
+  "saloes-de-beleza",
 ]);
 
 export function isReservedSlug(slug: string): boolean {
