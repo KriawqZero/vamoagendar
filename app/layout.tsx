@@ -30,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
+    <html data-theme="light" lang="pt-BR">
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
         <Suspense fallback={null}>
           <NavigationProgress />

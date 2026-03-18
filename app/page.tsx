@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarDays, Clock, Link2, Zap, Crown, Sparkles, CheckCircle2, ArrowRight, BarChart3, Users, Smartphone } from "lucide-react";
+import { CalendarDays, Clock, Link2, Zap, Crown, CheckCircle2, ArrowRight, Smartphone } from "lucide-react";
 import { getSession } from "@/lib/auth-server";
 import { PricingTeaser } from "@/components/upsell/pricing-teaser";
 import { BrandLink } from "@/components/brand/brand";
@@ -153,7 +153,7 @@ export default async function Home() {
                 {
                   icon: Crown,
                   title: "Personalize sua marca",
-                  description: "Com o plano Pro, adicione seu logo, escolha suas cores e tenha um link personalizado.",
+                  description: "Com o Plus ou Pro, escolha suas cores e tenha um link personalizado. No Pro, você também adiciona logo e integrações (em breve).",
                   color: "from-amber-500 to-amber-600",
                 },
               ].map((feature) => (
@@ -255,18 +255,19 @@ export default async function Home() {
             <div className="rounded-2xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-12 text-center dark:border-blue-900 dark:from-blue-950/30 dark:to-indigo-950/30">
               <Crown size={48} className="mx-auto mb-6 text-blue-600 dark:text-blue-400" />
               <h2 className="mb-4 text-4xl font-bold text-slate-900 dark:text-white">
-                Destaque sua marca com o plano Pro
+                Destaque sua marca com Plus ou Pro
               </h2>
               <p className="mx-auto mb-8 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
-                Por apenas <span className="font-semibold text-emerald-600 dark:text-emerald-400">R$ 9,90/mês</span> <span className="text-slate-500 line-through dark:text-slate-500">R$ 19,90</span> (50% OFF), tenha acesso a recursos profissionais que fazem a diferença
+                Plus por <span className="font-semibold text-emerald-600 dark:text-emerald-400">R$ 9,90/mês</span> <span className="text-slate-500 line-through dark:text-slate-500">R$ 19,90</span> ou Pro por <span className="font-semibold text-emerald-600 dark:text-emerald-400">R$ 14,90/mês</span> <span className="text-slate-500 line-through dark:text-slate-500">R$ 29,90</span> (50% OFF)
               </p>
 
               <div className="mx-auto mb-10 grid max-w-2xl gap-4 text-left sm:grid-cols-2">
                 {[
-                  "Link personalizado (vamoagendar.com.br/sua-marca)",
+                  "Link personalizado (/a/sua-marca no Plus, /sua-marca no Pro)",
                   "Serviços ilimitados",
-                  "Logo e cor da sua marca",
-                  "Lembretes automáticos por WhatsApp (em breve)",
+                  "Cor da sua marca (Plus/Pro)",
+                  "Logo personalizado (Pro)",
+                  "Lembretes automáticos por WhatsApp (Pro, em breve)",
                 ].map((benefit) => (
                   <div key={benefit} className="flex items-start gap-3">
                     <CheckCircle2 size={24} className="mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400" />

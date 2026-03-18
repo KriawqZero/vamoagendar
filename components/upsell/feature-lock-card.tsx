@@ -12,7 +12,7 @@ export function FeatureLockCard({ featureName, benefitText, example }: FeatureLo
     <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
       <div className="flex items-center gap-2 text-zinc-500">
         <Lock size={16} />
-        <p className="text-sm font-medium">{featureName} disponível no plano Pro</p>
+        <p className="text-sm font-medium">{featureName} disponível nos planos Plus/Pro</p>
       </div>
       <p className="mt-2 text-sm text-zinc-400">{benefitText}</p>
       {example && (
@@ -25,7 +25,7 @@ export function FeatureLockCard({ featureName, benefitText, example }: FeatureLo
         className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-violet-500 hover:text-violet-400"
       >
         <Crown size={14} />
-        Fazer upgrade para Pro
+        Fazer upgrade
       </Link>
     </div>
   );

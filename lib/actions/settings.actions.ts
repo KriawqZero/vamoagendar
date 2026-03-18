@@ -10,7 +10,7 @@ import { z } from "zod";
 const profileSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   businessName: z.string().min(2, "Nome do negócio deve ter pelo menos 2 caracteres"),
-  accentColor: z.string().regex(/^#[0-9a-fA-F]{6}$/, "Cor inválida"),
+  accentColor: z.string().regex(/^#[0-9a-fA-F]{6}$/, "Cor inválida").nullable().optional(),
 });
 
 export type SettingsState = {
@@ -31,6 +31,10 @@ export async function updateProfileAction(
 
   const limits = getPlanLimits(user.plan);
 
+  console.log(formData.get("name"));
+  console.log(formData.get("businessName"));
+  console.log(formData.get("accentColor"));
+
   const parsed = profileSchema.safeParse({
     name: formData.get("name"),
     businessName: formData.get("businessName"),
@@ -38,13 +42,20 @@ export async function updateProfileAction(
   });
 
   if (!parsed.success) {
-    return { fieldErrors: parsed.error.flatten().fieldErrors };
+    const errors: Record<string, string[]> = {};
+
+    for (let i = 0; i < parsed.error.issues.length; i++) {
+      const issue = parsed.error.issues[i];
+      errors[issue.path[0] as string] = [issue.message];
+    }
+    console.log(errors);
+    return { fieldErrors: errors };
   }
 
   await userRepository.update(session.user.id, {
     name: parsed.data.name,
     businessName: parsed.data.businessName,
-    accentColor: limits.canCustomize ? parsed.data.accentColor : user.accentColor,
+    accentColor: limits.canCustomize ? parsed.data.accentColor ?? user.accentColor : user.accentColor,
   });
 
   revalidatePath("/dashboard/settings");

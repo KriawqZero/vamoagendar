@@ -2,8 +2,25 @@ import { getBillingProvider } from "@/lib/billing";
 import type { WebhookEvent } from "@/lib/billing/types";
 import { subscriptionRepository } from "@/lib/repositories/subscription.repository";
 import { userRepository } from "@/lib/repositories/user.repository";
+import { Plan } from "@/generated/prisma/client";
+import {
+  BillingCycle,
+  PRO_MONTHLY_PLAN_ID,
+  resolvePlanFromPlanId,
+} from "@/lib/billing/plan-catalog";
 
-const PRO_PLAN_ID = "vamoagendar-pro-monthly";
+type MercadoPagoPaymentData = {
+  external_reference?: string | null;
+  metadata?: { plan_id?: string | null } | null;
+  additional_info?: { items?: Array<{ id?: string | null }> | null } | null;
+  order?: { items?: Array<{ id?: string | null }> | null } | null;
+};
+
+function addCyclePeriod(start: Date, cycle: BillingCycle): Date {
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const days = cycle === "annual" ? 365 : 30;
+  return new Date(start.getTime() + days * msPerDay);
+}
 
 interface UpgradeResult {
   success: boolean;
@@ -11,12 +28,21 @@ interface UpgradeResult {
   error?: string;
 }
 
-export async function initiateUpgrade(userId: string): Promise<UpgradeResult> {
+export async function initiateUpgrade(
+  userId: string,
+  planId: string = PRO_MONTHLY_PLAN_ID
+): Promise<UpgradeResult> {
   const user = await userRepository.findById(userId);
   if (!user) return { success: false, error: "Usuário não encontrado." };
 
-  if (user.plan === "PRO") {
+  const resolved = resolvePlanFromPlanId(planId);
+  if (!resolved) return { success: false, error: "Plano inválido." };
+
+  if (user.plan === "PRO" && resolved.plan === Plan.PRO) {
     return { success: false, error: "Você já é Pro!" };
+  }
+  if (user.plan === "PLUS" && resolved.plan === "PLUS") {
+    return { success: false, error: "Você já é Plus!" };
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "http://localhost:3000";
@@ -26,22 +52,24 @@ export async function initiateUpgrade(userId: string): Promise<UpgradeResult> {
     const result = await provider.createCheckoutUrl({
       userId: user.id,
       email: user.email,
-      planId: PRO_PLAN_ID,
+      planId,
       successUrl: `${appUrl}/dashboard/assinatura?status=success`,
       cancelUrl: `${appUrl}/dashboard/assinatura?status=canceled`,
     });
 
     // Create or update subscription record as pending
     const existing = await subscriptionRepository.findByUserId(userId);
+    const resolvedPlan = resolved.plan === "PRO" ? Plan.PRO : Plan.PLUS;
     if (existing) {
       await subscriptionRepository.update(existing.id, {
         status: "INACTIVE",
         mpSubscriptionId: result.externalId || null,
+        plan: resolvedPlan,
       });
     } else {
       await subscriptionRepository.create({
         user: { connect: { id: userId } },
-        plan: "PRO",
+        plan: resolvedPlan,
         status: "INACTIVE",
         mpSubscriptionId: result.externalId || null,
       });
@@ -76,9 +104,16 @@ export async function processWebhookEvent(event: WebhookEvent): Promise<void> {
         accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN! 
       });
       const payment = new Payment(client);
-      const paymentData = await payment.get({ id: paymentId });
+      const paymentData = (await payment.get({ id: paymentId })) as MercadoPagoPaymentData;
       
       const userId = paymentData.external_reference;
+      const paidPlanId =
+        // MercadoPago returns metadata as an object in most flows; keep fallbacks to be safe.
+        paymentData.metadata?.plan_id ||
+        paymentData.additional_info?.items?.[0]?.id ||
+        paymentData.order?.items?.[0]?.id ||
+        null;
+
       console.log("[processWebhookEvent] Payment approved for user:", userId);
       
       if (!userId) {
@@ -92,14 +127,23 @@ export async function processWebhookEvent(event: WebhookEvent): Promise<void> {
         return;
       }
 
+      const resolved = paidPlanId ? resolvePlanFromPlanId(String(paidPlanId)) : null;
+      if (!resolved) {
+        console.warn("[processWebhookEvent] Could not resolve plan from payment metadata:", paidPlanId);
+        return;
+      }
+
+      const resolvedPlan = resolved.plan === "PRO" ? Plan.PRO : Plan.PLUS;
+      const now = new Date();
       // Activate subscription
       await subscriptionRepository.update(subscription.id, {
         status: "ACTIVE",
-        currentPeriodStart: new Date(),
-        currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 days
+        plan: resolvedPlan,
+        currentPeriodStart: now,
+        currentPeriodEnd: addCyclePeriod(now, resolved.cycle),
         mpSubscriptionId: paymentId, // Store payment ID for reference
       });
-      await userRepository.update(userId, { plan: "PRO" });
+      await userRepository.update(userId, { plan: resolvedPlan });
       console.log("[processWebhookEvent] Subscription activated for user:", userId);
       return;
     } catch (error) {
@@ -117,12 +161,14 @@ export async function processWebhookEvent(event: WebhookEvent): Promise<void> {
 
   switch (event.type) {
     case "subscription.created": {
+      // Legacy PreApproval flow: keep behavior as PRO monthly by default.
+      const now = new Date();
       await subscriptionRepository.update(subscription.id, {
         status: "ACTIVE",
-        currentPeriodStart: new Date(),
-        currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 days
+        currentPeriodStart: now,
+        currentPeriodEnd: addCyclePeriod(now, "monthly"),
       });
-      await userRepository.update(subscription.userId, { plan: "PRO" });
+      await userRepository.update(subscription.userId, { plan: Plan.PRO });
       break;
     }
 
@@ -145,9 +191,10 @@ export async function processWebhookEvent(event: WebhookEvent): Promise<void> {
         });
 
         if (newStatus === "CANCELED" || newStatus === "INACTIVE") {
-          await userRepository.update(subscription.userId, { plan: "FREE" });
+          await userRepository.update(subscription.userId, { plan: Plan.FREE });
         } else if (newStatus === "ACTIVE") {
-          await userRepository.update(subscription.userId, { plan: "PRO" });
+          // Legacy PreApproval: treat as PRO
+          await userRepository.update(subscription.userId, { plan: Plan.PRO });
         }
       }
       break;
@@ -184,7 +231,7 @@ export async function cancelSubscription(userId: string): Promise<{ success: boo
     status: "CANCELED",
     canceledAt: new Date(),
   });
-  await userRepository.update(userId, { plan: "FREE" });
+  await userRepository.update(userId, { plan: Plan.FREE });
 
   return { success: true };
 }

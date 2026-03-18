@@ -13,11 +13,11 @@ export type BillingState = {
   checkoutUrl?: string;
 };
 
-export async function upgradeAction(): Promise<BillingState> {
+export async function upgradeAction(planId?: string): Promise<BillingState> {
   const session = await getSession();
   if (!session?.user?.id) return { error: "Não autorizado." };
 
-  const result = await initiateUpgrade(session.user.id);
+  const result = await initiateUpgrade(session.user.id, planId);
 
   if (!result.success) {
     return { error: result.error };

@@ -83,7 +83,7 @@ export function ServiceList({ services, canCreate, planLimit }: ServiceListProps
             className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
           >
             <Crown size={16} />
-            Fazer upgrade — R$ 9,90/mês (50% OFF)
+            Fazer upgrade — Plus R$ 9,90/mês ou Pro R$ 14,90/mês
           </Link>
         </div>
       )}

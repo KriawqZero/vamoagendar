@@ -7,6 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { Modal } from "@/components/ui/modal";
 import { Check, Crown, AlertTriangle, Sparkles } from "lucide-react";
 import Link from "next/link";
+import {
+  PLUS_ANNUAL_PLAN_ID,
+  PLUS_MONTHLY_PLAN_ID,
+  PRO_ANNUAL_PLAN_ID,
+  PRO_MONTHLY_PLAN_ID,
+} from "@/lib/billing/plan-catalog";
 
 interface SubscriptionCardProps {
   plan: string;
@@ -39,14 +45,18 @@ export function SubscriptionCard({ plan, subscription, statusParam }: Subscripti
   const [upgrading, setUpgrading] = useState(false);
   const [canceling, setCanceling] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const isPro = plan === "PRO";
+  const isPlus = plan === "PLUS";
+  const isPaid = isPro || isPlus;
+  const planLabel = isPro ? "Pro" : isPlus ? "Plus" : "Gratuito";
 
-  const handleUpgrade = async () => {
+  const handleUpgrade = async (planId: string) => {
     setUpgrading(true);
     setError(null);
-    const result = await upgradeAction();
+    const result = await upgradeAction(planId);
     if (result.checkoutUrl) {
       window.location.href = result.checkoutUrl;
     } else if (result.error) {
@@ -85,20 +95,28 @@ export function SubscriptionCard({ plan, subscription, statusParam }: Subscripti
       )}
 
       {/* Current plan card */}
-      <div className={`rounded-2xl border p-6 ${isPro ? "border-violet-500/30 bg-violet-500/5" : "border-zinc-800 bg-zinc-900"}`}>
+      <div className={`rounded-2xl border p-6 ${isPaid ? "border-violet-500/30 bg-violet-500/5" : "border-zinc-800 bg-zinc-900"}`}>
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2">
-              {isPro && <Crown size={18} className="text-violet-400" />}
+              {isPaid && <Crown size={18} className="text-violet-400" />}
               <h2 className="text-lg font-semibold text-zinc-100">
-                Plano {isPro ? "Pro" : "Gratuito"}
+                Plano {planLabel}
               </h2>
             </div>
-            {isPro ? (
+            {isPlus ? (
               <div className="mt-1 flex items-baseline gap-2">
                 <p className="text-sm text-zinc-400">R$ 9,90/mês</p>
                 <span className="text-xs text-zinc-600 line-through">R$ 19,90</span>
                 <span className="text-xs text-emerald-400">(-50%)</span>
+                <span className="text-xs text-zinc-500">• R$ 99,90/ano</span>
+              </div>
+            ) : isPro ? (
+              <div className="mt-1 flex items-baseline gap-2">
+                <p className="text-sm text-zinc-400">R$ 14,90/mês</p>
+                <span className="text-xs text-zinc-600 line-through">R$ 29,90</span>
+                <span className="text-xs text-emerald-400">(-50%)</span>
+                <span className="text-xs text-zinc-500">• R$ 149,90/ano</span>
               </div>
             ) : (
               <p className="mt-1 text-sm text-zinc-500">Até 2 serviços, link automático</p>
@@ -125,21 +143,27 @@ export function SubscriptionCard({ plan, subscription, statusParam }: Subscripti
       </div>
 
       {/* Upgrade card (FREE users) */}
-      {!isPro && (
+      {!isPaid && (
         <div className="rounded-2xl border-2 border-violet-500/30 bg-violet-500/5 p-6">
           <div className="flex items-center gap-2">
             <Crown size={20} className="text-violet-400" />
-            <h3 className="text-lg font-semibold text-zinc-100">Destaque sua marca com o Pro</h3>
+            <h3 className="text-lg font-semibold text-zinc-100">Faça upgrade para Plus ou Pro</h3>
           </div>
           <div className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-400">
             <Sparkles size={12} />
             Oferta especial - 50% OFF
           </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <p className="text-sm text-zinc-400">
-              Desbloqueie todos os recursos por apenas <span className="font-semibold text-emerald-400">R$ 9,90/mês</span>
+          <div className="mt-2 space-y-1 text-sm text-zinc-400">
+            <p>
+              <span className="font-semibold text-emerald-400">Plus: R$ 9,90/mês</span>{" "}
+              <span className="text-zinc-600 line-through">R$ 19,90</span>{" "}
+              <span className="text-xs text-zinc-500">• R$ 99,90/ano</span>
             </p>
-            <span className="text-sm text-zinc-600 line-through">R$ 19,90</span>
+            <p>
+              <span className="font-semibold text-emerald-400">Pro: R$ 14,90/mês</span>{" "}
+              <span className="text-zinc-600 line-through">R$ 29,90</span>{" "}
+              <span className="text-xs text-zinc-500">• R$ 149,90/ano</span>
+            </p>
           </div>
           
           <p className="mt-2 text-xs text-zinc-500">
@@ -149,9 +173,10 @@ export function SubscriptionCard({ plan, subscription, statusParam }: Subscripti
           <ul className="mt-4 space-y-2">
             {[
               "Serviços ilimitados — crie quantos precisar",
-              "Link personalizado — vamoagendar.com.br/sua-marca",
-              "Logo e cor da sua marca — identidade profissional",
-              "Lembretes automáticos por WhatsApp (em breve)",
+              "Link personalizado — /a/sua-marca (Plus) ou /sua-marca (Pro)",
+              "Cor da sua marca — identidade profissional (Plus/Pro)",
+              "Logo personalizado (Pro)",
+              "Lembretes automáticos por WhatsApp (Pro, em breve)",
             ].map((benefit) => (
               <li key={benefit} className="flex items-start gap-2 text-sm text-zinc-300">
                 <Check size={14} className="mt-0.5 shrink-0 text-emerald-400" />
@@ -167,9 +192,9 @@ export function SubscriptionCard({ plan, subscription, statusParam }: Subscripti
           </div>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Button onClick={handleUpgrade} loading={upgrading} className="flex-1">
+            <Button onClick={() => setShowUpgradeModal(true)} loading={upgrading} className="flex-1">
               <Crown size={16} className="mr-1.5" />
-              Assinar Pro — R$ 9,90/mês
+              Escolher plano
             </Button>
             <Link
               href="/planos"
@@ -194,11 +219,11 @@ export function SubscriptionCard({ plan, subscription, statusParam }: Subscripti
         <div className="space-y-3">
           <div className="flex items-center justify-between text-sm">
             <span className="text-zinc-400">Serviços</span>
-            <span className="text-zinc-200">{isPro ? "Ilimitados" : "Até 2"}</span>
+            <span className="text-zinc-200">{isPaid ? "Ilimitados" : "Até 2"}</span>
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="text-zinc-400">Link personalizado</span>
-            <span className={isPro ? "text-emerald-400" : "text-zinc-600"}>{isPro ? "Sim" : "Não"}</span>
+            <span className={isPaid ? "text-emerald-400" : "text-zinc-600"}>{isPaid ? "Sim" : "Não"}</span>
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="text-zinc-400">Logo personalizado</span>
@@ -206,17 +231,17 @@ export function SubscriptionCard({ plan, subscription, statusParam }: Subscripti
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="text-zinc-400">Cor de destaque</span>
-            <span className={isPro ? "text-emerald-400" : "text-zinc-600"}>{isPro ? "Sim" : "Não"}</span>
+            <span className={isPaid ? "text-emerald-400" : "text-zinc-600"}>{isPaid ? "Sim" : "Não"}</span>
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="text-zinc-400">Lembretes WhatsApp</span>
-            <span className={isPro ? "text-emerald-400" : "text-zinc-600"}>{isPro ? "Sim" : "Em breve"}</span>
+            <span className={isPro ? "text-emerald-400" : "text-zinc-600"}>{isPro ? "Sim" : "Não"}</span>
           </div>
         </div>
       </div>
 
       {/* Cancel section (PRO users) */}
-      {isPro && subscription?.status === "ACTIVE" && (
+      {isPaid && subscription?.status === "ACTIVE" && (
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
           <div className="flex items-center gap-2">
             <AlertTriangle size={16} className="text-zinc-500" />
@@ -270,6 +295,54 @@ export function SubscriptionCard({ plan, subscription, statusParam }: Subscripti
               Manter plano
             </Button>
           </div>
+        </div>
+      </Modal>
+
+      {/* Upgrade modal */}
+      <Modal
+        open={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        title="Escolher plano"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-zinc-400">
+            Escolha o plano e o ciclo de pagamento.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Button
+              onClick={() => handleUpgrade(PLUS_MONTHLY_PLAN_ID)}
+              loading={upgrading}
+              className="w-full"
+            >
+              Assinar Plus — R$ 9,90/mês
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => handleUpgrade(PLUS_ANNUAL_PLAN_ID)}
+              loading={upgrading}
+              className="w-full"
+            >
+              Plus anual — R$ 99,90/ano
+            </Button>
+            <Button
+              onClick={() => handleUpgrade(PRO_MONTHLY_PLAN_ID)}
+              loading={upgrading}
+              className="w-full"
+            >
+              Assinar Pro — R$ 14,90/mês
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => handleUpgrade(PRO_ANNUAL_PLAN_ID)}
+              loading={upgrading}
+              className="w-full"
+            >
+              Pro anual — R$ 149,90/ano
+            </Button>
+          </div>
+          <p className="text-xs text-zinc-600">
+            Após a confirmação do pagamento, seu plano será atualizado automaticamente.
+          </p>
         </div>
       </Modal>
     </div>

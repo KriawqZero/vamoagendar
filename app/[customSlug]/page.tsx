@@ -1,10 +1,11 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { userRepository } from "@/lib/repositories/user.repository";
 import { serviceRepository } from "@/lib/repositories/service.repository";
 import { BookingWizard } from "@/components/booking/booking-wizard";
 import type { Metadata } from "next";
 import { BrandMark } from "@/components/brand/brand";
+import Image from "next/image";
 
 interface BookingPageProps {
   params: Promise<{ customSlug: string }>;
@@ -24,6 +25,16 @@ export default async function BookingPage({ params }: BookingPageProps) {
   const { customSlug } = await params;
   const user = await userRepository.findByCustomSlug(customSlug);
   if (!user) notFound();
+
+  // Root custom slug (/{customSlug}) é exclusivo do Pro.
+  // No Plus, o link personalizado existe, mas deve viver em /a/{customSlug}.
+  if (user.plan === "PLUS") {
+    //redirect(`/a/${customSlug}`);
+    notFound();
+  }
+  if (user.plan !== "PRO") {
+    notFound();
+  }
 
   const services = await serviceRepository.findActiveByUserId(user.id);
 
@@ -48,9 +59,11 @@ export default async function BookingPage({ params }: BookingPageProps) {
         {/* Header */}
         <div className="mb-8 text-center">
           {user.logoUrl && (
-            <img
+            <Image
               src={user.logoUrl}
               alt={user.businessName || user.name}
+              width={64}
+              height={64}
               className="mx-auto mb-4 h-16 w-16 rounded-2xl object-cover"
             />
           )}

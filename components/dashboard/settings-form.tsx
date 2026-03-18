@@ -42,8 +42,16 @@ export function SettingsForm({ user }: SettingsFormProps) {
   const [profileState, profileAction, profilePending] = useActionState(updateProfileAction, initialState);
   const [customSlugState, customSlugAction, customSlugPending] = useActionState(updateCustomSlugAction, initialState);
   const isPro = user.plan === "PRO";
+  const isPlus = user.plan === "PLUS";
+  const canCustomSlug = isPro || isPlus;
+  const canAccentColor = isPro || isPlus;
+  const canLogo = isPro;
   const autoBookingUrl = `vamoagendar.com.br/a/${user.bookingCode}`;
-  const customBookingUrl = user.customSlug ? `vamoagendar.com.br/${user.customSlug}` : null;
+  const customBookingUrl = user.customSlug
+    ? isPro
+      ? `vamoagendar.com.br/${user.customSlug}`
+      : `vamoagendar.com.br/a/${user.customSlug}`
+    : null;
   const daysUntilChange = getDaysUntilNextChange(user.slugChangedAt);
 
   const copyLink = (url: string) => {
@@ -87,11 +95,11 @@ export function SettingsForm({ user }: SettingsFormProps) {
           className="flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 transition-colors hover:border-zinc-700"
         >
           <div className="flex items-center gap-3">
-            <Badge variant={isPro ? "success" : "default"}>
-              {isPro ? "Pro" : "Gratuito"}
+            <Badge variant={isPro || isPlus ? "success" : "default"}>
+              {isPro ? "Pro" : isPlus ? "Plus" : "Gratuito"}
             </Badge>
             <span className="text-sm text-zinc-400">
-              {isPro ? "Todos os recursos disponíveis" : "Até 2 serviços, link automático"}
+              {isPro ? "Todos os recursos disponíveis" : isPlus ? "Customização e link personalizado" : "Até 2 serviços, link automático"}
             </span>
           </div>
           <span className="text-sm text-violet-500">
@@ -100,13 +108,18 @@ export function SettingsForm({ user }: SettingsFormProps) {
         </Link>
       </section>
 
-      {/* Custom slug (PRO only) */}
+      {/* Custom slug (PLUS/PRO) */}
       <section>
         <div className="mb-4 flex items-center gap-2">
           <h2 className="text-lg font-semibold text-zinc-100">Link personalizado</h2>
-          {isPro && <Badge variant="success"><Crown size={12} className="mr-1" />Pro</Badge>}
+          {canCustomSlug && (
+            <Badge variant="success">
+              <Crown size={12} className="mr-1" />
+              {isPro ? "Pro" : "Plus"}
+            </Badge>
+          )}
         </div>
-        {isPro ? (
+        {canCustomSlug ? (
           <div className="space-y-4">
             <p className="text-sm text-zinc-500">
               Personalize seu link para algo memorável. Você pode alterar a cada 7 dias.
@@ -122,7 +135,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
                   <Copy size={16} />
                 </button>
                 <Link
-                  href={`/${user.customSlug}`}
+                  href={isPro ? `/${user.customSlug}` : `/a/${user.customSlug}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"
@@ -145,7 +158,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
                 </div>
               )}
               <div className="flex items-center gap-2">
-                <span className="text-sm text-zinc-500">vamoagendar.com.br/</span>
+                <span className="text-sm text-zinc-500">vamoagendar.com.br/{isPro ? "" : "a/"}</span>
                 <Input
                   id="customSlug"
                   name="customSlug"
@@ -174,9 +187,14 @@ export function SettingsForm({ user }: SettingsFormProps) {
       {/* Profile */}
       <section>
         <h2 className="mb-4 text-lg font-semibold text-zinc-100">Perfil</h2>
+        
         <form action={profileAction} className="space-y-4">
-          {profileState.error && (
-            <div className="rounded-xl bg-red-900/20 p-3 text-sm text-red-400">{profileState.error}</div>
+          {profileState.fieldErrors && (
+            <div className="rounded-xl bg-red-900/20 p-3 text-sm text-red-400">
+              {profileState.fieldErrors.name?.[0] && <div>{profileState.fieldErrors.name?.[0]}</div>}
+              {profileState.fieldErrors.businessName?.[0] && <div>{profileState.fieldErrors.businessName?.[0]}</div>}
+              {profileState.fieldErrors.accentColor?.[0] && <div>{profileState.fieldErrors.accentColor?.[0]}</div>}
+            </div>
           )}
           {profileState.success && (
             <div className="rounded-xl bg-emerald-900/20 p-3 text-sm text-emerald-400">Perfil atualizado!</div>
@@ -200,7 +218,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
             error={profileState.fieldErrors?.businessName?.[0]}
           />
 
-          {isPro ? (
+          {canLogo ? (
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-zinc-300">
                 Logo personalizado (opcional)
@@ -214,7 +232,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
             />
           )}
 
-          {isPro ? (
+          {canAccentColor ? (
             <div className="flex flex-col gap-1.5">
               <label htmlFor="settings-accentColor" className="text-sm font-medium text-zinc-300">
                 Cor de destaque

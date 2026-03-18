@@ -20,14 +20,14 @@ export function UpgradeBanner() {
             Desbloqueie todo o potencial do VamoAgendar
           </p>
           <p className="mt-0.5 text-xs text-zinc-400">
-            Serviços ilimitados, link personalizado e muito mais por <span className="font-semibold text-emerald-400">R$ 9,90/mês</span> <span className="text-zinc-600 line-through">R$ 19,90</span>
+            Link personalizado e customização por <span className="font-semibold text-emerald-400">R$ 9,90/mês</span> (Plus) ou tudo incluso por <span className="font-semibold text-emerald-400">R$ 14,90/mês</span> (Pro)
           </p>
         </div>
         <Link
           href="/dashboard/assinatura"
           className="shrink-0 rounded-xl bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
         >
-          Seja Pro
+          Ver planos
         </Link>
         <button
           onClick={() => setDismissed(true)}

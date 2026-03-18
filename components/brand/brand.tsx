@@ -79,7 +79,7 @@ type BrandLinkProps = Omit<ComponentProps<typeof Link>, "children" | "href"> & {
 export function BrandLink({
   href = "/",
   variant = "logo",
-  logoHeight = 22,
+  logoHeight = 40,
   markSize = 24,
   className,
   ...props

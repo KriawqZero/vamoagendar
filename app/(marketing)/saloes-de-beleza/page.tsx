@@ -190,8 +190,8 @@ export default function SaloesPage() {
               <h3 className="mb-2 text-2xl font-bold text-slate-900 dark:text-white">Pro</h3>
               <p className="mb-6 text-slate-700 dark:text-slate-300">por mês</p>
               <div className="mb-6 flex items-baseline gap-2">
-                <span className="text-4xl font-bold text-slate-900 dark:text-white">R$ 9,90</span>
-                <span className="text-slate-500 line-through dark:text-slate-500">R$ 19,90</span>
+                <span className="text-4xl font-bold text-slate-900 dark:text-white">R$ 14,90</span>
+                <span className="text-slate-500 line-through dark:text-slate-500">R$ 29,90</span>
               </div>
               <ul className="space-y-3 text-slate-900 dark:text-slate-100">
                 <li className="flex items-center gap-2">

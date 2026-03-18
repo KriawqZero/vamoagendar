@@ -99,7 +99,8 @@ export default function FaturamentoPage() {
                 <div className="space-y-2">
                   <p className="font-medium text-zinc-300">Como funciona:</p>
                   <ol className="space-y-2 text-zinc-500">
-                    <li>1. Você realiza o pagamento de R$ 9,90</li>
+                    <li>1. Você escolhe o plano (Plus ou Pro) e o ciclo (mensal ou anual)</li>
+                    <li>2. Você realiza o pagamento (ex.: Plus R$ 9,90/mês ou R$ 99,90/ano; Pro R$ 14,90/mês ou R$ 149,90/ano)</li>
                     <li>2. Seu plano é ativado imediatamente após confirmação do pagamento</li>
                     <li>3. Você tem acesso ao plano Pro por 30 dias corridos</li>
                     <li>4. Após 30 dias, seu plano volta automaticamente para o gratuito</li>

@@ -7,6 +7,12 @@ import type {
   SubscriptionInfo,
   WebhookEvent,
 } from "./types";
+import {
+  PLUS_ANNUAL_PLAN_ID,
+  PLUS_MONTHLY_PLAN_ID,
+  PRO_ANNUAL_PLAN_ID,
+  PRO_MONTHLY_PLAN_ID,
+} from "@/lib/billing/plan-catalog";
 
 function getClient() {
   const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN;
@@ -21,16 +27,51 @@ export class MercadoPagoProvider implements BillingProvider {
     const client = getClient();
     const preference = new Preference(client);
 
+    const catalog: Record<
+      string,
+      { title: string; description: string; unit_price: number; currency_id: "BRL" }
+    > = {
+      [PLUS_MONTHLY_PLAN_ID]: {
+        title: "VamoAgendar Plus",
+        description: "Plano Plus — R$ 9,90/mês",
+        unit_price: 9.9,
+        currency_id: "BRL",
+      },
+      [PLUS_ANNUAL_PLAN_ID]: {
+        title: "VamoAgendar Plus (Anual)",
+        description: "Plano Plus — R$ 99,90/ano",
+        unit_price: 99.9,
+        currency_id: "BRL",
+      },
+      [PRO_MONTHLY_PLAN_ID]: {
+        title: "VamoAgendar Pro",
+        description: "Plano Pro — R$ 14,90/mês",
+        unit_price: 14.9,
+        currency_id: "BRL",
+      },
+      [PRO_ANNUAL_PLAN_ID]: {
+        title: "VamoAgendar Pro (Anual)",
+        description: "Plano Pro — R$ 149,90/ano",
+        unit_price: 149.9,
+        currency_id: "BRL",
+      },
+    };
+
+    const item = catalog[input.planId];
+    if (!item) {
+      throw new Error(`Unknown planId: ${input.planId}`);
+    }
+
     const result = await preference.create({
       body: {
         items: [
           {
             id: input.planId,
-            title: "VamoAgendar Pro",
-            description: "Plano Pro — R$ 9,90/mês",
+            title: item.title,
+            description: item.description,
             quantity: 1,
-            unit_price: 9.9,
-            currency_id: "BRL",
+            unit_price: item.unit_price,
+            currency_id: item.currency_id,
           },
         ],
         payer: {

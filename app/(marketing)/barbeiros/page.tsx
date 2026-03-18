@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { NicheLandingLayout } from "@/components/niche/niche-landing-layout";
-import { CheckCircle2, Shield, Calendar, Clock, Crown, Zap, ArrowRight, Brain } from "lucide-react";
+import { CheckCircle2, Instagram, MessageCircle, Calendar, Crown, Zap, ArrowRight, Scissors } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Agendamento Online para Psicólogos | VamoAgendar",
-  description: "Sua agenda de consultas organizada e profissional. Sistema simples de agendamento online para psicólogos e terapeutas.",
+  title: "Agendamento Online para Barbearias | VamoAgendar",
+  description: "Sua barbearia lotada, sem precisar responder mensagem. Link na bio do Instagram, agenda automática e visual profissional.",
 };
 
-export default function PsicologosPage() {
+export default function BarbeirosPage() {
   return (
     <NicheLandingLayout>
       {/* Hero */}
@@ -20,18 +20,18 @@ export default function PsicologosPage() {
 
         <div className="mx-auto max-w-4xl">
           <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 dark:border-blue-900 dark:bg-blue-950/30 dark:text-blue-300">
-            <Brain size={16} />
-            Feito para psicólogos e terapeutas
+            <Scissors size={16} />
+            Feito para barbeiros e barbearias
           </div>
 
           <h1 className="mb-6 text-5xl font-bold tracking-tight text-slate-900 sm:text-6xl lg:text-7xl dark:text-white">
-            Sua agenda de consultas
+            Sua barbearia lotada,
             <br />
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">organizada e profissional</span>
+            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">sem responder mensagem</span>
           </h1>
 
           <p className="mb-10 text-xl leading-relaxed text-slate-600 dark:text-slate-400">
-            Chega de planilhas e confirmações manuais. Ofereça aos seus pacientes uma forma simples e profissional de agendar consultas online — 24 horas por dia.
+            Pare de perder tempo respondendo &quot;que horas você tem vaga?&quot; no WhatsApp. Coloque um link na bio do Instagram e deixe seus clientes agendarem sozinhos.
           </p>
 
           <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -60,28 +60,28 @@ export default function PsicologosPage() {
       <section className="border-t border-slate-200 bg-slate-50 px-4 py-20 dark:border-slate-800 dark:bg-slate-900/30 sm:py-32">
         <div className="mx-auto max-w-4xl">
           <h2 className="mb-16 text-center text-4xl font-bold text-slate-900 dark:text-white">
-            Desafios do dia a dia
+            Problemas que todo barbeiro conhece
           </h2>
 
           <div className="grid gap-8 md:grid-cols-3">
             {[
               {
-                icon: Calendar,
-                problem: "Confirmações manuais",
-                description: "Trocar mensagens para confirmar horários toma tempo que você poderia usar com seus pacientes.",
-                color: "from-blue-500 to-blue-600",
+                icon: MessageCircle,
+                problem: "WhatsApp lotado",
+                description: "Clientes perguntando horário o dia todo. Você perde tempo que podia estar trabalhando.",
+                color: "from-red-500 to-red-600",
               },
               {
-                icon: Clock,
-                problem: "Agenda desorganizada",
-                description: "Planilhas, cadernos, anotações soltas. Difícil ter visão clara da sua semana.",
+                icon: Calendar,
+                problem: "Agenda bagunçada",
+                description: "Marcações no caderno, no celular, na cabeça. Às vezes até marca dois clientes no mesmo horário.",
                 color: "from-amber-500 to-amber-600",
               },
               {
-                icon: Shield,
-                problem: "Imagem pouco profissional",
-                description: "Seus pacientes merecem uma experiência moderna e organizada desde o primeiro contato.",
-                color: "from-purple-500 to-purple-600",
+                icon: Instagram,
+                problem: "Bio sem link útil",
+                description: "Seus seguidores querem agendar, mas não sabem como. Você perde clientes todo dia.",
+                color: "from-pink-500 to-pink-600",
               },
             ].map((item) => (
               <div
@@ -106,30 +106,30 @@ export default function PsicologosPage() {
         <div className="mx-auto max-w-4xl">
           <div className="mb-16 text-center">
             <h2 className="mb-4 text-4xl font-bold text-slate-900 dark:text-white">
-              Agendamento profissional e simples
+              A solução que você precisa
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400">
-              Foco no que importa: seus pacientes
+              Simples, rápido e feito para barbeiros
             </p>
           </div>
 
           <div className="grid gap-8 md:grid-cols-2">
             {[
               {
-                title: "Link de agendamento profissional",
-                description: "Compartilhe um link único por email, WhatsApp ou redes sociais. Seus pacientes agendam quando quiserem, sem precisar falar com você.",
+                title: "Link na bio do Instagram",
+                description: "Um link único que você coloca na bio. Seus clientes clicam, escolhem o serviço e agendam. Sem precisar falar com você.",
               },
               {
-                title: "Horários configuráveis",
-                description: "Defina seus dias e horários de atendimento, pausas, exceções e feriados. O sistema mostra só o que está disponível.",
+                title: "Agenda automática e inteligente",
+                description: "O sistema mostra só os horários que você tem disponível. Sem conflito, sem dupla marcação, sem dor de cabeça.",
               },
               {
-                title: "Confirmação automática",
-                description: "Seus pacientes recebem confirmação por email automaticamente. Você vê tudo organizado no painel.",
+                title: "Visual profissional",
+                description: "Página de agendamento bonita com o nome da sua barbearia. Seus clientes vão achar que você é high-tech.",
               },
               {
-                title: "Privacidade e simplicidade",
-                description: "Sistema focado em praticidade. Seus pacientes informam apenas nome e contato para agendar.",
+                title: "Controle total no painel",
+                description: "Veja todos os agendamentos do dia, da semana, do mês. Tudo organizado em um lugar só.",
               },
             ].map((item) => (
               <div key={item.title} className="flex gap-4">
@@ -148,10 +148,10 @@ export default function PsicologosPage() {
       <section className="border-t border-slate-200 bg-slate-50 px-4 py-20 dark:border-slate-800 dark:bg-slate-900/30 sm:py-32">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="mb-4 text-4xl font-bold text-slate-900 dark:text-white">
-            Planos acessíveis
+            Preço que cabe no bolso
           </h2>
           <p className="mb-12 text-lg text-slate-600 dark:text-slate-400">
-            Comece grátis e faça upgrade quando precisar
+            Comece grátis. Faça upgrade quando quiser.
           </p>
 
           <div className="mx-auto grid max-w-2xl gap-8 sm:grid-cols-2">
@@ -165,7 +165,7 @@ export default function PsicologosPage() {
               <ul className="space-y-3 text-slate-700 dark:text-slate-300">
                 <li className="flex items-center gap-2">
                   <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400" />
-                  Até 2 tipos de consulta
+                  Até 2 serviços
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400" />
@@ -190,13 +190,13 @@ export default function PsicologosPage() {
               <h3 className="mb-2 text-2xl font-bold text-slate-900 dark:text-white">Pro</h3>
               <p className="mb-6 text-slate-700 dark:text-slate-300">por mês</p>
               <div className="mb-6 flex items-baseline gap-2">
-                <span className="text-4xl font-bold text-slate-900 dark:text-white">R$ 9,90</span>
-                <span className="text-slate-500 line-through dark:text-slate-500">R$ 19,90</span>
+                <span className="text-4xl font-bold text-slate-900 dark:text-white">R$ 14,90</span>
+                <span className="text-slate-500 line-through dark:text-slate-500">R$ 29,90</span>
               </div>
               <ul className="space-y-3 text-slate-900 dark:text-slate-100">
                 <li className="flex items-center gap-2">
                   <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400" />
-                  Tipos de consulta ilimitados
+                  Serviços ilimitados
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400" />
@@ -204,7 +204,7 @@ export default function PsicologosPage() {
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400" />
-                  Identidade profissional
+                  Logo da sua barbearia
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400" />
@@ -224,10 +224,10 @@ export default function PsicologosPage() {
       <section className="border-t border-slate-200 px-4 py-20 dark:border-slate-800 sm:py-32">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="mb-4 text-4xl font-bold text-slate-900 dark:text-white sm:text-5xl">
-            Pronto para organizar sua agenda?
+            Pronto para ter mais clientes e menos trabalho?
           </h2>
           <p className="mb-10 text-lg text-slate-600 dark:text-slate-400">
-            Crie sua conta grátis e comece a oferecer agendamento online para seus pacientes
+            Crie sua conta grátis agora e comece a receber agendamentos em minutos
           </p>
           <Link
             href="/register"

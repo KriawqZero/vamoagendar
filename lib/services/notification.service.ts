@@ -24,7 +24,7 @@ export async function sendBookingConfirmation(data: NotificationData) {
 
   try {
     await transporter.sendMail({
-      from: process.env.SMTP_FROM || "noreply@vamoagendar.com",
+      from: process.env.SMTP_FROM || "noreply@vamoagendar.com.br",
       to: data.clientEmail,
       subject: `Agendamento confirmado - ${data.professionalName}`,
       html: `

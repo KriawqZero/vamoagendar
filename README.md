@@ -122,13 +122,13 @@ prisma/
 
 ## Plans
 
-| Feature | Free | Pro (R$ 9,90/mês) |
-|---------|------|-----|
-| Services | 2 max | Unlimited |
-| Custom slug | No | Yes |
-| Logo customization | No | Yes |
-| Accent color | No | Yes |
-| WhatsApp reminders | No | Yes |
+| Feature | Free | Plus (R$ 9,90/mês ou R$ 99,90/ano) | Pro (R$ 14,90/mês ou R$ 149,90/ano) |
+|---------|------|----------------------------------|---------------------------------|
+| Services | 2 max | Unlimited | Unlimited |
+| Custom slug | No | Yes (em `/a/{slug}`) | Yes (em `/{slug}`) |
+| Logo customization | No | No | Yes |
+| Accent color | No | Yes | Yes |
+| WhatsApp reminders | No | No | Yes |
 
 ## Billing Status
 

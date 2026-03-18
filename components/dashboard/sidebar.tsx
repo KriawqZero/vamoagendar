@@ -67,9 +67,9 @@ export function Sidebar({ businessName, plan, logoUrl }: SidebarProps) {
               <h2 className="truncate text-lg font-bold text-zinc-100">
                 {businessName || "VamoAgendar"}
               </h2>
-              {plan === "PRO" && (
+              {(plan === "PRO" || plan === "PLUS") && (
                 <span className="rounded-md bg-violet-600/20 px-1.5 py-0.5 text-[10px] font-bold uppercase text-violet-400">
-                  Pro
+                  {plan === "PRO" ? "Pro" : "Plus"}
                 </span>
               )}
             </div>

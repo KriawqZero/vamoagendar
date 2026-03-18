@@ -10,15 +10,17 @@ export const metadata: Metadata = {
 };
 
 const features = [
-  { name: "Agendamento online", free: true, pro: true },
-  { name: "Link de agendamento", free: true, pro: true },
-  { name: "Gestão de agenda", free: true, pro: true },
-  { name: "Horários personalizáveis", free: true, pro: true },
-  { name: "Exceções e feriados", free: true, pro: true },
-  { name: "Serviços", free: "Até 2", pro: "Ilimitados" },
-  { name: "Link personalizado", free: false, pro: true },
-  { name: "Cor e logo personalizado", free: false, pro: true },
-  { name: "Lembretes por WhatsApp", free: false, pro: true },
+  { name: "Agendamento online", free: true, plus: true, pro: true },
+  { name: "Link de agendamento", free: true, plus: true, pro: true },
+  { name: "Gestão de agenda", free: true, plus: true, pro: true },
+  { name: "Horários personalizáveis", free: true, plus: true, pro: true },
+  { name: "Exceções e feriados", free: true, plus: true, pro: true },
+  { name: "Serviços", free: "Até 2", plus: "Ilimitados", pro: "Ilimitados" },
+  { name: "Link personalizado", free: false, plus: true, pro: true },
+  { name: "Cor personalizada", free: false, plus: true, pro: true },
+  { name: "Logo personalizado", free: false, plus: false, pro: true },
+  { name: "Lembretes por WhatsApp (futuro)", free: false, plus: false, pro: true },
+  { name: "Google Calendar (futuro)", free: false, plus: false, pro: true },
 ];
 
 function FeatureValue({ value }: { value: boolean | string }) {
@@ -84,7 +86,7 @@ export default async function PlanosPage() {
         {/* Plan cards */}
         <section className="px-4 py-20 sm:py-32">
           <div className="mx-auto max-w-6xl">
-            <div className="grid gap-8 lg:grid-cols-2">
+            <div className="grid gap-8 lg:grid-cols-3">
               {/* FREE */}
               <div className="flex flex-col rounded-2xl border border-slate-200 bg-white p-10 transition-all hover:shadow-lg dark:border-slate-800 dark:bg-slate-900/50">
                 <div className="mb-8">
@@ -120,6 +122,51 @@ export default async function PlanosPage() {
                 </div>
               </div>
 
+              {/* PLUS */}
+              <div className="relative flex flex-col rounded-2xl border border-slate-200 bg-white p-10 transition-all hover:shadow-lg dark:border-slate-800 dark:bg-slate-900/50">
+                <div className="absolute -top-4 right-8">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-1 text-sm font-semibold text-white shadow-lg">
+                    <Sparkles size={16} />
+                    50% OFF
+                  </span>
+                </div>
+
+                <div className="mb-8">
+                  <div className="mb-4 inline-flex rounded-lg bg-emerald-100 p-3 dark:bg-emerald-950/30">
+                    <Sparkles size={24} className="text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                  <h2 className="mb-2 text-3xl font-bold text-slate-900 dark:text-white">Plus</h2>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    Para quem quer personalizar a marca e ter um link memorável.
+                  </p>
+                </div>
+
+                <div className="mb-8">
+                  <div className="mb-2 flex items-baseline gap-2">
+                    <span className="text-5xl font-bold text-slate-900 dark:text-white">R$ 9,90</span>
+                    <span className="text-xl text-slate-500 line-through dark:text-slate-500">R$ 19,90</span>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-400">/mês • R$ 99,90/ano</p>
+                </div>
+
+                <Link
+                  href="/register"
+                  className="mb-8 inline-flex items-center justify-center rounded-lg border-2 border-emerald-300 bg-emerald-50 px-6 py-3 text-center font-semibold text-emerald-700 transition-colors hover:border-emerald-400 hover:bg-emerald-100 dark:border-emerald-900/60 dark:bg-emerald-950/20 dark:text-emerald-300 dark:hover:border-emerald-800 dark:hover:bg-emerald-950/40"
+                >
+                  Assinar Plus
+                  <ArrowRight className="ml-2" size={18} />
+                </Link>
+
+                <div className="space-y-4">
+                  {features.map((f) => (
+                    <div key={f.name} className="flex items-center justify-between">
+                      <span className="text-slate-700 dark:text-slate-300">{f.name}</span>
+                      <FeatureValue value={f.plus} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               {/* PRO */}
               <div className="relative flex flex-col rounded-2xl border-2 border-blue-600 bg-gradient-to-br from-blue-50 to-indigo-50 p-10 shadow-xl dark:border-blue-500 dark:from-blue-950/30 dark:to-indigo-950/30">
                 <div className="absolute -top-4 right-8">
@@ -141,10 +188,10 @@ export default async function PlanosPage() {
 
                 <div className="mb-8">
                   <div className="mb-2 flex items-baseline gap-2">
-                    <span className="text-5xl font-bold text-slate-900 dark:text-white">R$ 9,90</span>
-                    <span className="text-xl text-slate-500 line-through dark:text-slate-500">R$ 19,90</span>
+                    <span className="text-5xl font-bold text-slate-900 dark:text-white">R$ 14,90</span>
+                    <span className="text-xl text-slate-500 line-through dark:text-slate-500">R$ 29,90</span>
                   </div>
-                  <p className="text-slate-700 dark:text-slate-300">/mês</p>
+                  <p className="text-slate-700 dark:text-slate-300">/mês • R$ 149,90/ano</p>
                 </div>
 
                 <Link
@@ -181,6 +228,7 @@ export default async function PlanosPage() {
                   <tr className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/50">
                     <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900 dark:text-white">Recurso</th>
                     <th className="px-6 py-4 text-center text-sm font-semibold text-slate-900 dark:text-white">Gratuito</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold text-slate-900 dark:text-white">Plus</th>
                     <th className="px-6 py-4 text-center text-sm font-semibold text-slate-900 dark:text-white">Pro</th>
                   </tr>
                 </thead>
@@ -195,6 +243,9 @@ export default async function PlanosPage() {
                       <td className="px-6 py-4 text-sm text-slate-700 dark:text-slate-300">{f.name}</td>
                       <td className="px-6 py-4 text-center">
                         <FeatureValue value={f.free} />
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <FeatureValue value={f.plus} />
                       </td>
                       <td className="px-6 py-4 text-center">
                         <FeatureValue value={f.pro} />
@@ -230,7 +281,7 @@ export default async function PlanosPage() {
                 },
                 {
                   question: "Posso fazer upgrade depois?",
-                  answer: "Sim! Você pode começar no plano gratuito e fazer upgrade para Pro a qualquer momento.",
+                  answer: "Sim! Você pode começar no plano gratuito e fazer upgrade para Plus ou Pro a qualquer momento.",
                 },
                 {
                   question: "O que acontece se eu cancelar o Pro?",

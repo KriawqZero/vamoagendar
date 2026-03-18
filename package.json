@@ -1,7 +1,7 @@
 {
   "name": "vamoagendar",
   "version": "0.1.0",
-  "packageManager": "pnpm@10.32.0",
+  "packageManager": "pnpm@10.32.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -36,8 +36,10 @@
     "@types/nodemailer": "^7.0.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.27",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "postcss": "^8.5.8",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

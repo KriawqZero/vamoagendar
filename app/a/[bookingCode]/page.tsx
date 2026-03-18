@@ -5,6 +5,7 @@ import { serviceRepository } from "@/lib/repositories/service.repository";
 import { BookingWizard } from "@/components/booking/booking-wizard";
 import type { Metadata } from "next";
 import { BrandMark } from "@/components/brand/brand";
+import Image from "next/image";
 
 interface BookingPageProps {
   params: Promise<{ bookingCode: string }>;
@@ -12,7 +13,10 @@ interface BookingPageProps {
 
 export async function generateMetadata({ params }: BookingPageProps): Promise<Metadata> {
   const { bookingCode } = await params;
-  const user = await userRepository.findByBookingCode(bookingCode);
+  const identifier = bookingCode;
+  const user =
+    (await userRepository.findByBookingCode(identifier)) ??
+    (await userRepository.findByCustomSlug(identifier));
   if (!user) return { title: "Não encontrado" };
   return {
     title: `Agendar | ${user.businessName || user.name}`,
@@ -22,7 +26,10 @@ export async function generateMetadata({ params }: BookingPageProps): Promise<Me
 
 export default async function BookingPage({ params }: BookingPageProps) {
   const { bookingCode } = await params;
-  const user = await userRepository.findByBookingCode(bookingCode);
+  const identifier = bookingCode;
+  const user =
+    (await userRepository.findByBookingCode(identifier)) ??
+    (await userRepository.findByCustomSlug(identifier));
   if (!user) notFound();
 
   const services = await serviceRepository.findActiveByUserId(user.id);
@@ -48,9 +55,11 @@ export default async function BookingPage({ params }: BookingPageProps) {
         {/* Header */}
         <div className="mb-8 text-center">
           {user.logoUrl && (
-            <img
+            <Image
               src={user.logoUrl}
               alt={user.businessName || user.name}
+              width={64}
+              height={64}
               className="mx-auto mb-4 h-16 w-16 rounded-2xl object-cover"
             />
           )}
