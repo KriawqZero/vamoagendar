@@ -16,7 +16,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "vamoagendar",
+  title: "VamoAgendar | Agendamento online",
   description: "Sistema de agendamento online para profissionais, clínicas e empresas. Simples, rápido e profissional.",
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
