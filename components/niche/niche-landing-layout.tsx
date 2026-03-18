@@ -8,25 +8,25 @@ interface NicheLandingLayoutProps {
 
 export function NicheLandingLayout({ children }: NicheLandingLayoutProps) {
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-950">
+    <div className="flex min-h-screen flex-col bg-white dark:bg-slate-950">
       {/* Nav */}
-      <header className="border-b border-zinc-900">
-        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
+      <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/80">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <BrandLink
             href="/"
             className="inline-flex items-center"
             aria-label="VamoAgendar"
           />
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <Link
               href="/login"
-              className="rounded-lg px-3 py-1.5 text-sm text-zinc-400 hover:text-zinc-200"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
             >
               Entrar
             </Link>
             <Link
               href="/register"
-              className="rounded-xl bg-violet-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-violet-700"
+              className="rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:from-blue-700 hover:to-indigo-700"
             >
               Criar conta grátis
             </Link>
@@ -39,28 +39,29 @@ export function NicheLandingLayout({ children }: NicheLandingLayoutProps) {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-900 px-4 py-8">
-        <div className="mx-auto max-w-5xl">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <div className="text-center sm:text-left">
-              <div className="flex items-center justify-center sm:justify-start">
-                <BrandLogo height={18} />
-              </div>
-              <p className="mt-1 text-xs text-zinc-600">
+      <footer className="border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center justify-between gap-8 sm:flex-row">
+            <div>
+              <BrandLink href="/" className="inline-flex items-center" aria-label="VamoAgendar" />
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
                 Agendamento online simples e profissional
               </p>
             </div>
-            <div className="flex gap-6 text-xs text-zinc-500">
-              <Link href="/planos" className="hover:text-zinc-400">
+            <div className="flex gap-8 text-sm text-slate-600 dark:text-slate-400">
+              <Link href="/planos" className="transition-colors hover:text-slate-900 dark:hover:text-slate-100">
                 Planos
               </Link>
-              <Link href="/login" className="hover:text-zinc-400">
+              <Link href="/login" className="transition-colors hover:text-slate-900 dark:hover:text-slate-100">
                 Entrar
               </Link>
-              <Link href="/register" className="hover:text-zinc-400">
+              <Link href="/register" className="transition-colors hover:text-slate-900 dark:hover:text-slate-100">
                 Criar conta
               </Link>
             </div>
+          </div>
+          <div className="mt-8 border-t border-slate-200 pt-8 text-center text-xs text-slate-500 dark:border-slate-800 dark:text-slate-600">
+            <p>&copy; 2024 VamoAgendar. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>

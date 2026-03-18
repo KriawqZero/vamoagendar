@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Check, X, Zap, Crown, Sparkles } from "lucide-react";
+import { Check, X, Zap, Crown, Sparkles, ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 import { getSession } from "@/lib/auth-server";
 import { BrandLink } from "@/components/brand/brand";
@@ -23,210 +23,279 @@ const features = [
 
 function FeatureValue({ value }: { value: boolean | string }) {
   if (typeof value === "string") {
-    return <span className="text-sm text-zinc-300">{value}</span>;
+    return <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{value}</span>;
   }
   return value ? (
-    <Check size={16} className="text-emerald-400" />
+    <Check size={20} className="text-emerald-600 dark:text-emerald-400" />
   ) : (
-    <X size={16} className="text-zinc-600" />
+    <X size={20} className="text-slate-300 dark:text-slate-700" />
   );
 }
 
 export default async function PlanosPage() {
-    const session = await getSession();
-    const isAuthenticated = !!session?.user?.id;
+  const session = await getSession();
+  const isAuthenticated = !!session?.user?.id;
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-950">
+    <div className="flex min-h-screen flex-col bg-white dark:bg-slate-950">
       {/* Nav */}
-      <header className="border-b border-zinc-900">
-        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
+      <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/80">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <BrandLink href="/" className="inline-flex items-center" aria-label="VamoAgendar" />
           {isAuthenticated ? (
             <Link
               href="/dashboard"
-              className="rounded-lg px-3 py-1.5 text-sm text-zinc-400 hover:text-zinc-200"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
             >
               Dashboard
             </Link>
           ) : (
-          <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="rounded-lg px-3 py-1.5 text-sm text-zinc-400 hover:text-zinc-200"
-            >
-              Entrar
-            </Link>
-            <Link
-              href="/register"
-              className="rounded-xl bg-violet-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-violet-700"
-            >
-              Criar conta
-            </Link>
-          </div>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/login"
+                className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
+              >
+                Entrar
+              </Link>
+              <Link
+                href="/register"
+                className="rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:from-blue-700 hover:to-indigo-700"
+              >
+                Criar conta
+              </Link>
+            </div>
           )}
         </div>
       </header>
 
-      <main className="flex-1 px-4 py-16">
-        <div className="mx-auto max-w-4xl">
-          {/* Header */}
-          <div className="mb-12 text-center">
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-50 sm:text-4xl">
+      <main className="flex-1">
+        {/* Header */}
+        <section className="border-b border-slate-200 px-4 py-20 dark:border-slate-800 sm:py-32">
+          <div className="mx-auto max-w-4xl text-center">
+            <h1 className="mb-6 text-5xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-6xl">
               Planos simples, sem surpresas
             </h1>
-            <p className="mx-auto mt-4 max-w-md text-base text-zinc-500">
+            <p className="text-xl text-slate-600 dark:text-slate-400">
               Comece grátis e faça upgrade quando precisar. Sem taxas escondidas.
             </p>
           </div>
+        </section>
 
-          {/* Plan cards */}
-          <div className="mx-auto grid max-w-3xl gap-6 sm:grid-cols-2">
-            {/* FREE */}
-            <div className="flex flex-col rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6">
-              <div className="mb-6">
-                <div className="flex items-center gap-2">
-                  <Zap size={18} className="text-zinc-400" />
-                  <h2 className="text-lg font-semibold text-zinc-100">Gratuito</h2>
-                </div>
-                <div className="mt-4">
-                  <div className="mb-2 h-6" aria-hidden />
-                  <span className="text-4xl font-bold text-zinc-100">R$ 0</span>
-                  <span className="text-sm text-zinc-500">/mês</span>
-                </div>
-                <p className="mt-2 text-sm text-zinc-500">
-                  Ideal para começar e testar o sistema.
-                </p>
-              </div>
-
-              <Link
-                href="/register"
-                className="mb-6 block rounded-xl border border-zinc-700 py-2.5 text-center text-sm font-medium text-zinc-200 transition-colors hover:bg-zinc-800"
-              >
-                Começar grátis
-              </Link>
-
-              <ul className="space-y-3">
-                {features.map((f) => (
-                  <li key={f.name} className="flex items-center justify-between text-sm">
-                    <span className="text-zinc-400">{f.name}</span>
-                    <FeatureValue value={f.free} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* PRO */}
-            <div className="flex flex-col rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6">
-              <div className="mb-6">
-                <div className="flex items-center gap-2">
-                  <Crown size={18} className="text-violet-400" />
-                  <h2 className="text-lg font-semibold text-zinc-100">Pro</h2>
-                </div>
-                <div className="mt-4">
-                  <div className="mb-2 h-6">
-                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-400">
-                      <Sparkles size={12} />
-                      Oferta especial - 50% OFF
-                    </span>
+        {/* Plan cards */}
+        <section className="px-4 py-20 sm:py-32">
+          <div className="mx-auto max-w-6xl">
+            <div className="grid gap-8 lg:grid-cols-2">
+              {/* FREE */}
+              <div className="flex flex-col rounded-2xl border border-slate-200 bg-white p-10 transition-all hover:shadow-lg dark:border-slate-800 dark:bg-slate-900/50">
+                <div className="mb-8">
+                  <div className="mb-4 inline-flex rounded-lg bg-blue-100 p-3 dark:bg-blue-950/30">
+                    <Zap size={24} className="text-blue-600 dark:text-blue-400" />
                   </div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-bold text-zinc-100">R$ 9,90</span>
-                    <span className="text-lg text-zinc-600 line-through">R$ 19,90</span>
-                  </div>
-                  <span className="text-sm text-zinc-500">/mês</span>
+                  <h2 className="mb-2 text-3xl font-bold text-slate-900 dark:text-white">Gratuito</h2>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    Ideal para começar e testar o sistema.
+                  </p>
                 </div>
-                <p className="mt-2 text-sm text-zinc-400">
-                  Para profissionais que querem se destacar e crescer.
-                </p>
+
+                <div className="mb-8">
+                  <div className="mb-2 text-5xl font-bold text-slate-900 dark:text-white">R$ 0</div>
+                  <p className="text-slate-600 dark:text-slate-400">/mês</p>
+                </div>
+
+                <Link
+                  href="/register"
+                  className="mb-8 inline-flex items-center justify-center rounded-lg border-2 border-slate-300 px-6 py-3 text-center font-semibold text-slate-700 transition-colors hover:border-slate-400 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:bg-slate-800"
+                >
+                  Começar grátis
+                  <ArrowRight className="ml-2" size={18} />
+                </Link>
+
+                <div className="space-y-4">
+                  {features.map((f) => (
+                    <div key={f.name} className="flex items-center justify-between">
+                      <span className="text-slate-700 dark:text-slate-300">{f.name}</span>
+                      <FeatureValue value={f.free} />
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <Link
-                href="/register"
-                className="mb-6 block rounded-xl bg-violet-600 py-2.5 text-center text-sm font-medium text-white transition-colors hover:bg-violet-700"
-              >
-                Assinar Pro
-              </Link>
+              {/* PRO */}
+              <div className="relative flex flex-col rounded-2xl border-2 border-blue-600 bg-gradient-to-br from-blue-50 to-indigo-50 p-10 shadow-xl dark:border-blue-500 dark:from-blue-950/30 dark:to-indigo-950/30">
+                <div className="absolute -top-4 right-8">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-1 text-sm font-semibold text-white shadow-lg">
+                    <Sparkles size={16} />
+                    50% OFF
+                  </span>
+                </div>
 
-              <ul className="space-y-3">
-                {features.map((f) => (
-                  <li key={f.name} className="flex items-center justify-between text-sm">
-                    <span className="text-zinc-300">{f.name}</span>
-                    <FeatureValue value={f.pro} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+                <div className="mb-8">
+                  <div className="mb-4 inline-flex rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 p-3">
+                    <Crown size={24} className="text-white" />
+                  </div>
+                  <h2 className="mb-2 text-3xl font-bold text-slate-900 dark:text-white">Pro</h2>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    Para profissionais que querem se destacar e crescer.
+                  </p>
+                </div>
 
-          {/* FAQ section */}
-          <div className="mx-auto mt-16 max-w-2xl text-center">
-            <h3 className="text-lg font-semibold text-zinc-200">Dúvidas frequentes</h3>
-            <div className="mt-6 space-y-4 text-left">
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
-                <p className="text-sm font-medium text-zinc-200">Posso cancelar a qualquer momento?</p>
-                <p className="mt-1 text-sm text-zinc-500">
-                  Sim. Sem multa, sem burocracia. Seu plano volta para o gratuito imediatamente.
-                </p>
-              </div>
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
-                <p className="text-sm font-medium text-zinc-200">Preciso de cartão de crédito para começar?</p>
-                <p className="mt-1 text-sm text-zinc-500">
-                  Não. O plano gratuito não requer nenhum dado de pagamento.
-                </p>
-              </div>
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
-                <p className="text-sm font-medium text-zinc-200">Como funciona o pagamento?</p>
-                <p className="mt-1 text-sm text-zinc-500">
-                  Pagamento via Mercado Pago. Aceita PIX, cartão de crédito e boleto.{" "}
-                  <Link href="/faturamento" className="text-violet-400 hover:text-violet-300">
-                    Ver detalhes sobre faturamento →
-                  </Link>
-                </p>
-              </div>
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
-                <p className="text-sm font-medium text-zinc-200">Posso fazer upgrade depois?</p>
-                <p className="mt-1 text-sm text-zinc-500">
-                  Sim! Você pode começar no plano gratuito e fazer upgrade para Pro a qualquer momento.
-                </p>
-              </div>
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
-                <p className="text-sm font-medium text-zinc-200">O que acontece se eu cancelar o Pro?</p>
-                <p className="mt-1 text-sm text-zinc-500">
-                  Seu plano volta para o gratuito. Você mantém até 2 serviços e o link automático continua funcionando.
-                </p>
+                <div className="mb-8">
+                  <div className="mb-2 flex items-baseline gap-2">
+                    <span className="text-5xl font-bold text-slate-900 dark:text-white">R$ 9,90</span>
+                    <span className="text-xl text-slate-500 line-through dark:text-slate-500">R$ 19,90</span>
+                  </div>
+                  <p className="text-slate-700 dark:text-slate-300">/mês</p>
+                </div>
+
+                <Link
+                  href="/register"
+                  className="mb-8 inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-center font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:from-blue-700 hover:to-indigo-700"
+                >
+                  Assinar Pro
+                  <ArrowRight className="ml-2" size={18} />
+                </Link>
+
+                <div className="space-y-4">
+                  {features.map((f) => (
+                    <div key={f.name} className="flex items-center justify-between">
+                      <span className="font-medium text-slate-900 dark:text-slate-100">{f.name}</span>
+                      <FeatureValue value={f.pro} />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
+        </section>
 
-          {/* Final CTA */}
-          <div className="mx-auto mt-16 max-w-2xl text-center">
-            <div className="rounded-2xl border border-violet-500/30 bg-violet-500/5 p-8">
-              <h3 className="text-xl font-bold text-zinc-100">
+        {/* Comparison Table */}
+        <section className="border-t border-slate-200 bg-slate-50 px-4 py-20 dark:border-slate-800 dark:bg-slate-900/30 sm:py-32">
+          <div className="mx-auto max-w-4xl">
+            <h2 className="mb-12 text-center text-3xl font-bold text-slate-900 dark:text-white">
+              Comparação completa
+            </h2>
+
+            <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/50">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900 dark:text-white">Recurso</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold text-slate-900 dark:text-white">Gratuito</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold text-slate-900 dark:text-white">Pro</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {features.map((f, i) => (
+                    <tr
+                      key={f.name}
+                      className={`border-b border-slate-200 dark:border-slate-800 ${
+                        i % 2 === 0 ? "bg-white dark:bg-slate-950/50" : "bg-slate-50 dark:bg-slate-900/30"
+                      }`}
+                    >
+                      <td className="px-6 py-4 text-sm text-slate-700 dark:text-slate-300">{f.name}</td>
+                      <td className="px-6 py-4 text-center">
+                        <FeatureValue value={f.free} />
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <FeatureValue value={f.pro} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ section */}
+        <section className="border-t border-slate-200 px-4 py-20 dark:border-slate-800 sm:py-32">
+          <div className="mx-auto max-w-3xl">
+            <h3 className="mb-12 text-center text-3xl font-bold text-slate-900 dark:text-white">
+              Dúvidas frequentes
+            </h3>
+
+            <div className="space-y-6">
+              {[
+                {
+                  question: "Posso cancelar a qualquer momento?",
+                  answer: "Sim. Sem multa, sem burocracia. Seu plano volta para o gratuito imediatamente.",
+                },
+                {
+                  question: "Preciso de cartão de crédito para começar?",
+                  answer: "Não. O plano gratuito não requer nenhum dado de pagamento.",
+                },
+                {
+                  question: "Como funciona o pagamento?",
+                  answer: "Pagamento via Mercado Pago. Aceita PIX, cartão de crédito e boleto.",
+                },
+                {
+                  question: "Posso fazer upgrade depois?",
+                  answer: "Sim! Você pode começar no plano gratuito e fazer upgrade para Pro a qualquer momento.",
+                },
+                {
+                  question: "O que acontece se eu cancelar o Pro?",
+                  answer: "Seu plano volta para o gratuito. Você mantém até 2 serviços e o link automático continua funcionando.",
+                },
+              ].map((faq) => (
+                <div
+                  key={faq.question}
+                  className="rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/50"
+                >
+                  <p className="mb-2 font-semibold text-slate-900 dark:text-white">{faq.question}</p>
+                  <p className="text-slate-600 dark:text-slate-400">{faq.answer}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Final CTA */}
+        <section className="border-t border-slate-200 bg-slate-50 px-4 py-20 dark:border-slate-800 dark:bg-slate-900/30 sm:py-32">
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="rounded-2xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-12 dark:border-blue-900 dark:from-blue-950/30 dark:to-indigo-950/30">
+              <h3 className="mb-4 text-4xl font-bold text-slate-900 dark:text-white">
                 Pronto para começar?
               </h3>
-              <p className="mt-2 text-sm text-zinc-400">
+              <p className="mb-8 text-lg text-slate-600 dark:text-slate-400">
                 Crie sua conta grátis agora e comece a receber agendamentos em minutos
               </p>
               <Link
                 href="/register"
-                className="mt-6 inline-flex rounded-xl bg-violet-600 px-8 py-3 text-sm font-semibold text-white hover:bg-violet-700"
+                className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-10 py-4 text-lg font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:from-blue-700 hover:to-indigo-700"
               >
                 Criar conta grátis
+                <ArrowRight className="ml-2" size={20} />
               </Link>
             </div>
           </div>
-        </div>
+        </section>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-900 py-6 text-center text-xs text-zinc-700">
-        <div className="flex items-center justify-center gap-4">
-          <Link href="/faturamento" className="hover:text-zinc-500">
-            Faturamento e Políticas
-          </Link>
-          <span>•</span>
-          <span>VamoAgendar &middot; Agendamento simples para profissionais</span>
+      <footer className="border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center justify-between gap-8 sm:flex-row">
+            <div>
+              <BrandLink href="/" className="inline-flex items-center" aria-label="VamoAgendar" />
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                Agendamento online simples para profissionais
+              </p>
+            </div>
+            <div className="flex gap-8 text-sm text-slate-600 dark:text-slate-400">
+              <Link href="/planos" className="transition-colors hover:text-slate-900 dark:hover:text-slate-100">
+                Planos
+              </Link>
+              <Link href="/login" className="transition-colors hover:text-slate-900 dark:hover:text-slate-100">
+                Entrar
+              </Link>
+              <Link href="/register" className="transition-colors hover:text-slate-900 dark:hover:text-slate-100">
+                Criar conta
+              </Link>
+            </div>
+          </div>
+          <div className="mt-8 border-t border-slate-200 pt-8 text-center text-xs text-slate-500 dark:border-slate-800 dark:text-slate-600">
+            <p>&copy; 2024 VamoAgendar. Todos os direitos reservados.</p>
+          </div>
         </div>
       </footer>
     </div>
