@@ -1,25 +1,41 @@
-import { prisma } from "@/lib/prisma";
-import type { Prisma } from "@/generated/prisma/client";
+import { createClient } from "@/utils/supabase/server";
+import { Holiday } from "@/types/models";
+
+function mapHolidayDates(row: any): Holiday {
+  if (!row) return row;
+  return {
+    ...row,
+    date: row.date ? new Date(row.date) : new Date(),
+  };
+}
 
 export const holidayRepository = {
-  findByUserId(userId: string) {
-    return prisma.holiday.findMany({
-      where: { userId },
-      orderBy: { date: "asc" },
-    });
+  async findByUserId(userId: string): Promise<Holiday[]> {
+    const supabase = await createClient();
+    const { data } = await supabase.from("Holiday").select("*").eq("userId", userId).order("date", { ascending: true });
+    return (data || []).map(mapHolidayDates);
   },
 
-  findByUserIdAndDate(userId: string, date: Date) {
-    return prisma.holiday.findFirst({
-      where: { userId, date },
-    });
+  async findByUserIdAndDate(userId: string, date: Date): Promise<Holiday | null> {
+    const supabase = await createClient();
+    const { data } = await supabase.from("Holiday")
+      .select("*")
+      .eq("userId", userId)
+      .eq("date", date.toISOString().split("T")[0])
+      .maybeSingle();
+    return data ? mapHolidayDates(data) : null;
   },
 
-  create(data: Prisma.HolidayUncheckedCreateInput) {
-    return prisma.holiday.create({ data });
+  async create(data: any): Promise<Holiday> {
+    const supabase = await createClient();
+    const { data: inserted, error } = await supabase.from("Holiday").insert(data).select().single();
+    if (error) throw new Error(error.message);
+    return mapHolidayDates(inserted);
   },
 
-  delete(id: string) {
-    return prisma.holiday.delete({ where: { id } });
+  async delete(id: string): Promise<void> {
+    const supabase = await createClient();
+    const { error } = await supabase.from("Holiday").delete().eq("id", id);
+    if (error) throw new Error(error.message);
   },
 };

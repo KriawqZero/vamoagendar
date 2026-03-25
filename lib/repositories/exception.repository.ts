@@ -1,25 +1,40 @@
-import { prisma } from "@/lib/prisma";
-import type { Prisma } from "@/generated/prisma/client";
+import { createClient } from "@/utils/supabase/server";
+import { AvailabilityException } from "@/types/models";
+
+function mapExceptionDates(row: any): AvailabilityException {
+  if (!row) return row;
+  return {
+    ...row,
+    date: row.date ? new Date(row.date) : new Date(),
+  };
+}
 
 export const exceptionRepository = {
-  findByUserId(userId: string) {
-    return prisma.availabilityException.findMany({
-      where: { userId },
-      orderBy: { date: "asc" },
-    });
+  async findByUserId(userId: string): Promise<AvailabilityException[]> {
+    const supabase = await createClient();
+    const { data } = await supabase.from("AvailabilityException").select("*").eq("userId", userId).order("date", { ascending: true });
+    return (data || []).map(mapExceptionDates);
   },
 
-  findByUserIdAndDate(userId: string, date: Date) {
-    return prisma.availabilityException.findMany({
-      where: { userId, date },
-    });
+  async findByUserIdAndDate(userId: string, date: Date): Promise<AvailabilityException[]> {
+    const supabase = await createClient();
+    const { data } = await supabase.from("AvailabilityException")
+      .select("*")
+      .eq("userId", userId)
+      .eq("date", date.toISOString().split("T")[0]);
+    return (data || []).map(mapExceptionDates);
   },
 
-  create(data: Prisma.AvailabilityExceptionUncheckedCreateInput) {
-    return prisma.availabilityException.create({ data });
+  async create(data: any): Promise<AvailabilityException> {
+    const supabase = await createClient();
+    const { data: inserted, error } = await supabase.from("AvailabilityException").insert(data).select().single();
+    if (error) throw new Error(error.message);
+    return mapExceptionDates(inserted);
   },
 
-  delete(id: string) {
-    return prisma.availabilityException.delete({ where: { id } });
+  async delete(id: string): Promise<void> {
+    const supabase = await createClient();
+    const { error } = await supabase.from("AvailabilityException").delete().eq("id", id);
+    if (error) throw new Error(error.message);
   },
 };

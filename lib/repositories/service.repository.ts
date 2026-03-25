@@ -1,38 +1,56 @@
-import { prisma } from "@/lib/prisma";
-import type { Prisma } from "@/generated/prisma/client";
+import { createClient } from "@/utils/supabase/server";
+import { Service } from "@/types/models";
+
+function mapServiceDates(row: any): Service {
+  if (!row) return row;
+  return {
+    ...row,
+    createdAt: row.createdAt ? new Date(row.createdAt) : new Date(),
+  };
+}
 
 export const serviceRepository = {
-  findByUserId(userId: string) {
-    return prisma.service.findMany({
-      where: { userId },
-      orderBy: { createdAt: "asc" },
-    });
+  async findByUserId(userId: string): Promise<Service[]> {
+    const supabase = await createClient();
+    const { data } = await supabase.from("Service").select("*").eq("userId", userId).order("createdAt", { ascending: true });
+    return (data || []).map(mapServiceDates);
   },
 
-  findActiveByUserId(userId: string) {
-    return prisma.service.findMany({
-      where: { userId, active: true },
-      orderBy: { createdAt: "asc" },
-    });
+  async findActiveByUserId(userId: string): Promise<Service[]> {
+    const supabase = await createClient();
+    const { data } = await supabase.from("Service").select("*").eq("userId", userId).eq("active", true).order("createdAt", { ascending: true });
+    return (data || []).map(mapServiceDates);
   },
 
-  findById(id: string) {
-    return prisma.service.findUnique({ where: { id } });
+  async findById(id: string): Promise<Service | null> {
+    const supabase = await createClient();
+    const { data } = await supabase.from("Service").select("*").eq("id", id).maybeSingle();
+    return data ? mapServiceDates(data) : null;
   },
 
-  countByUserId(userId: string) {
-    return prisma.service.count({ where: { userId } });
+  async countByUserId(userId: string): Promise<number> {
+    const supabase = await createClient();
+    const { count } = await supabase.from("Service").select("*", { count: "exact", head: true }).eq("userId", userId);
+    return count || 0;
   },
 
-  create(data: Prisma.ServiceUncheckedCreateInput) {
-    return prisma.service.create({ data });
+  async create(data: any): Promise<Service> {
+    const supabase = await createClient();
+    const { data: inserted, error } = await supabase.from("Service").insert(data).select().single();
+    if (error) throw new Error(error.message);
+    return mapServiceDates(inserted);
   },
 
-  update(id: string, data: Prisma.ServiceUncheckedUpdateInput) {
-    return prisma.service.update({ where: { id }, data });
+  async update(id: string, data: any): Promise<Service> {
+    const supabase = await createClient();
+    const { data: updated, error } = await supabase.from("Service").update(data).eq("id", id).select().single();
+    if (error) throw new Error(error.message);
+    return mapServiceDates(updated);
   },
 
-  delete(id: string) {
-    return prisma.service.delete({ where: { id } });
+  async delete(id: string): Promise<void> {
+    const supabase = await createClient();
+    const { error } = await supabase.from("Service").delete().eq("id", id);
+    if (error) throw new Error(error.message);
   },
 };

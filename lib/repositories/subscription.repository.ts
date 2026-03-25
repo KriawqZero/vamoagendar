@@ -1,28 +1,56 @@
-import { prisma } from "@/lib/prisma";
-import type { Prisma } from "@/generated/prisma/client";
+import { createClient } from "@/utils/supabase/server";
+import { Subscription, SubscriptionStatus } from "@/types/models";
+
+function mapSubscriptionDates(row: any): Subscription {
+  if (!row) return row;
+  return {
+    ...row,
+    currentPeriodStart: row.currentPeriodStart ? new Date(row.currentPeriodStart) : null,
+    currentPeriodEnd: row.currentPeriodEnd ? new Date(row.currentPeriodEnd) : null,
+    canceledAt: row.canceledAt ? new Date(row.canceledAt) : null,
+    createdAt: row.createdAt ? new Date(row.createdAt) : new Date(),
+    updatedAt: row.updatedAt ? new Date(row.updatedAt) : new Date(),
+  };
+}
 
 export const subscriptionRepository = {
-  findByUserId(userId: string) {
-    return prisma.subscription.findUnique({ where: { userId } });
+  async findByUserId(userId: string): Promise<Subscription | null> {
+    const supabase = await createClient();
+    const { data } = await supabase.from("Subscription").select("*").eq("userId", userId).maybeSingle();
+    return data ? mapSubscriptionDates(data) : null;
   },
 
-  findByMpSubscriptionId(mpSubscriptionId: string) {
-    return prisma.subscription.findUnique({ where: { mpSubscriptionId } });
+  async findByMpSubscriptionId(mpSubscriptionId: string): Promise<Subscription | null> {
+    const supabase = await createClient();
+    const { data } = await supabase.from("Subscription").select("*").eq("mpSubscriptionId", mpSubscriptionId).maybeSingle();
+    return data ? mapSubscriptionDates(data) : null;
   },
 
-  create(data: Prisma.SubscriptionCreateInput) {
-    return prisma.subscription.create({ data });
+  async create(data: any): Promise<Subscription> {
+    const supabase = await createClient();
+    const { data: inserted, error } = await supabase.from("Subscription").insert(data).select().single();
+    if (error) throw new Error(error.message);
+    return mapSubscriptionDates(inserted);
   },
 
-  update(id: string, data: Prisma.SubscriptionUpdateInput) {
-    return prisma.subscription.update({ where: { id }, data });
+  async update(id: string, data: any): Promise<Subscription> {
+    const supabase = await createClient();
+    const { data: updated, error } = await supabase.from("Subscription").update(data).eq("id", id).select().single();
+    if (error) throw new Error(error.message);
+    return mapSubscriptionDates(updated);
   },
 
-  updateByUserId(userId: string, data: Prisma.SubscriptionUpdateInput) {
-    return prisma.subscription.update({ where: { userId }, data });
+  async updateByUserId(userId: string, data: any): Promise<Subscription> {
+    const supabase = await createClient();
+    const { data: updated, error } = await supabase.from("Subscription").update(data).eq("userId", userId).select().single();
+    if (error) throw new Error(error.message);
+    return mapSubscriptionDates(updated);
   },
 
-  updateStatus(id: string, status: Prisma.SubscriptionUpdateInput["status"]) {
-    return prisma.subscription.update({ where: { id }, data: { status } });
+  async updateStatus(id: string, status: SubscriptionStatus): Promise<Subscription> {
+    const supabase = await createClient();
+    const { data: updated, error } = await supabase.from("Subscription").update({ status }).eq("id", id).select().single();
+    if (error) throw new Error(error.message);
+    return mapSubscriptionDates(updated);
   },
 };

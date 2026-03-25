@@ -1,36 +1,64 @@
-import { prisma } from "@/lib/prisma";
-import type { Prisma } from "@/generated/prisma/client";
+import { createClient } from "@/utils/supabase/server";
+import { User, Plan } from "@/types/models";
+
+function mapUserDates(row: any): User {
+  if (!row) return row;
+  return {
+    ...row,
+    createdAt: row.createdAt ? new Date(row.createdAt) : new Date(),
+    updatedAt: row.updatedAt ? new Date(row.updatedAt) : new Date(),
+    slugChangedAt: row.slugChangedAt ? new Date(row.slugChangedAt) : null,
+  };
+}
 
 export const userRepository = {
-  findById(id: string) {
-    return prisma.user.findUnique({ where: { id } });
+  async findById(id: string): Promise<User | null> {
+    const supabase = await createClient();
+    const { data } = await supabase.from("User").select("*").eq("id", id).maybeSingle();
+    return data ? mapUserDates(data) : null;
   },
 
-  findByEmail(email: string) {
-    return prisma.user.findUnique({ where: { email } });
+  async findByEmail(email: string): Promise<User | null> {
+    const supabase = await createClient();
+    const { data } = await supabase.from("User").select("*").eq("email", email).maybeSingle();
+    return data ? mapUserDates(data) : null;
   },
 
-  findByBookingCode(bookingCode: string) {
-    return prisma.user.findUnique({ where: { bookingCode } });
+  async findByBookingCode(bookingCode: string): Promise<User | null> {
+    const supabase = await createClient();
+    const { data } = await supabase.from("User").select("*").eq("bookingCode", bookingCode).maybeSingle();
+    return data ? mapUserDates(data) : null;
   },
 
-  findByCustomSlug(customSlug: string) {
-    return prisma.user.findUnique({ where: { customSlug } });
+  async findByCustomSlug(customSlug: string): Promise<User | null> {
+    const supabase = await createClient();
+    const { data } = await supabase.from("User").select("*").eq("customSlug", customSlug).maybeSingle();
+    return data ? mapUserDates(data) : null;
   },
 
-  create(data: Prisma.UserCreateInput) {
-    return prisma.user.create({ data });
+  async create(data: any): Promise<User> {
+    const supabase = await createClient();
+    const { data: newUser, error } = await supabase.from("User").insert(data).select().single();
+    if (error) throw new Error(error.message);
+    return mapUserDates(newUser);
   },
 
-  update(id: string, data: Prisma.UserUpdateInput) {
-    return prisma.user.update({ where: { id }, data });
+  async update(id: string, data: any): Promise<User> {
+    const supabase = await createClient();
+    const { data: updated, error } = await supabase.from("User").update(data).eq("id", id).select().single();
+    if (error) throw new Error(error.message);
+    return mapUserDates(updated);
   },
 
-  bookingCodeExists(bookingCode: string) {
-    return prisma.user.findUnique({ where: { bookingCode }, select: { id: true } }).then(Boolean);
+  async existsByBookingCode(bookingCode: string): Promise<boolean> {
+    const supabase = await createClient();
+    const { data } = await supabase.from("User").select("id").eq("bookingCode", bookingCode).maybeSingle();
+    return !!data;
   },
 
-  customSlugExists(customSlug: string) {
-    return prisma.user.findUnique({ where: { customSlug }, select: { id: true } }).then(Boolean);
+  async existsByCustomSlug(customSlug: string): Promise<boolean> {
+    const supabase = await createClient();
+    const { data } = await supabase.from("User").select("id").eq("customSlug", customSlug).maybeSingle();
+    return !!data;
   },
 };

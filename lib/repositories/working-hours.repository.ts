@@ -1,37 +1,56 @@
-import { prisma } from "@/lib/prisma";
-import type { Prisma } from "@/generated/prisma/client";
+import { createClient } from "@/utils/supabase/server";
+import { WorkingHours } from "@/types/models";
+
+function mapWorkingHoursDates(row: any): WorkingHours {
+  return row as WorkingHours;
+}
 
 export const workingHoursRepository = {
-  findByUserId(userId: string) {
-    return prisma.workingHours.findMany({
-      where: { userId },
-      orderBy: [{ dayOfWeek: "asc" }, { startTime: "asc" }],
-    });
+  async findByUserId(userId: string): Promise<WorkingHours[]> {
+    const supabase = await createClient();
+    const { data } = await supabase.from("WorkingHours")
+      .select("*")
+      .eq("userId", userId)
+      .order("dayOfWeek", { ascending: true })
+      .order("startTime", { ascending: true });
+    return (data || []).map(mapWorkingHoursDates);
   },
 
-  findByUserIdAndDay(userId: string, dayOfWeek: number) {
-    return prisma.workingHours.findMany({
-      where: { userId, dayOfWeek },
-      orderBy: { startTime: "asc" },
-    });
+  async findByUserIdAndDay(userId: string, dayOfWeek: number): Promise<WorkingHours[]> {
+    const supabase = await createClient();
+    const { data } = await supabase.from("WorkingHours")
+      .select("*")
+      .eq("userId", userId)
+      .eq("dayOfWeek", dayOfWeek)
+      .order("startTime", { ascending: true });
+    return (data || []).map(mapWorkingHoursDates);
   },
 
-  create(data: Prisma.WorkingHoursUncheckedCreateInput) {
-    return prisma.workingHours.create({ data });
+  async create(data: any): Promise<WorkingHours> {
+    const supabase = await createClient();
+    const { data: inserted, error } = await supabase.from("WorkingHours").insert(data).select().single();
+    if (error) throw new Error(error.message);
+    return mapWorkingHoursDates(inserted);
   },
 
-  deleteByUserId(userId: string) {
-    return prisma.workingHours.deleteMany({ where: { userId } });
+  async deleteByUserId(userId: string): Promise<void> {
+    const supabase = await createClient();
+    const { error } = await supabase.from("WorkingHours").delete().eq("userId", userId);
+    if (error) throw new Error(error.message);
   },
 
-  async replaceAll(userId: string, blocks: { dayOfWeek: number; startTime: string; endTime: string }[]) {
-    return prisma.$transaction([
-      prisma.workingHours.deleteMany({ where: { userId } }),
-      ...blocks.map((block) =>
-        prisma.workingHours.create({
-          data: { userId, ...block },
-        })
-      ),
-    ]);
+  async replaceAll(userId: string, blocks: { dayOfWeek: number; startTime: string; endTime: string }[]): Promise<void> {
+    const supabase = await createClient();
+    
+    // First delete all
+    const { error: deleteError } = await supabase.from("WorkingHours").delete().eq("userId", userId);
+    if (deleteError) throw new Error(deleteError.message);
+    
+    if (blocks.length > 0) {
+      const { error: insertError } = await supabase.from("WorkingHours").insert(
+        blocks.map(block => ({ userId, ...block }))
+      );
+      if (insertError) throw new Error(insertError.message);
+    }
   },
 };
