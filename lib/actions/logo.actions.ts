@@ -62,7 +62,7 @@ export async function uploadLogoAction(
     const key = await uploadLogo(session.user.id, buffer, file.type);
     
     // Get public URL
-    const logoUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/storage/${key}`;
+    const logoUrl = (await import("@/lib/storage")).getLogoUrl(key);
 
     // Update user
     await userRepository.update(session.user.id, { logoUrl });

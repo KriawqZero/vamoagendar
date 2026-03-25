@@ -1,13 +1,6 @@
-import nodemailer from "nodemailer";
+import { Resend } from 'resend';
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT) || 587,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface NotificationData {
   clientName: string;
@@ -20,12 +13,12 @@ interface NotificationData {
 }
 
 export async function sendBookingConfirmation(data: NotificationData) {
-  if (!data.clientEmail || !process.env.SMTP_HOST) return;
+  if (!data.clientEmail || !process.env.RESEND_API_KEY) return;
 
   try {
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM || "noreply@vamoagendar.com.br",
-      to: data.clientEmail,
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || "VamoAgendar <noreply@vamoagendar.com.br>",
+      to: [data.clientEmail],
       subject: `Agendamento confirmado - ${data.professionalName}`,
       html: `
         <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">

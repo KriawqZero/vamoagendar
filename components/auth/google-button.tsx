@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
+import { createClient } from "@/utils/supabase/client";
 
 export function GoogleButton() {
   const [loading, setLoading] = useState(false);
@@ -13,12 +13,13 @@ export function GoogleButton() {
     console.log("[GoogleButton] Starting Google sign-in...");
     setLoading(true);
     try {
-      console.log("[GoogleButton] Calling authClient.signIn.social...");
-      const result = await authClient.signIn.social({
+      const supabase = createClient();
+      const result = await supabase.auth.signInWithOAuth({
         provider: "google",
-        callbackURL: "/dashboard",
+        options: {
+          redirectTo: `${location.origin}/dashboard`
+        }
       });
-      console.log("[GoogleButton] Sign-in result:", result);
     } catch (error: any) {
       console.error("[GoogleButton] Sign-in error:", error);
       console.error("[GoogleButton] Error details:", {

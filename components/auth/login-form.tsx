@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
+import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -21,12 +21,13 @@ export function LoginForm() {
     const password = formData.get("password") as string;
 
     try {
-      const result = await authClient.signIn.email({
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (result.error) {
+      if (signInError) {
         setError("Email ou senha incorretos.");
         setLoading(false);
         return;

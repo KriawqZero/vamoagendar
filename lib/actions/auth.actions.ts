@@ -46,25 +46,37 @@ export async function registerAction(
   }
 
   try {
-    // Create user with Better Auth
-    const result = await auth.api.signUpEmail({
-      body: {
-        name,
-        email,
-        password,
-      },
+    const { createClient } = await import("@/utils/supabase/server");
+    const supabase = await createClient();
+    
+    const { data: result, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { name } },
     });
 
-    if (!result || !result.user) {
-      return { error: "Erro ao criar conta." };
+    if (signUpError || !result.user) {
+      return { error: signUpError?.message || "Erro ao criar conta." };
     }
 
-    // Update user with businessName and bookingCode (if not set by databaseHooks)
-    const user = await userRepository.findById(result.user.id);
-    await userRepository.update(result.user.id, {
-      businessName,
-      bookingCode: user?.bookingCode || undefined, // Keep existing if set
-    });
+    try {
+      const { prisma } = await import("@/lib/prisma");
+      const { generateBookingCode } = await import("@/lib/utils/slug");
+      await prisma.user.create({
+        data: {
+          id: result.user.id,
+          name,
+          email,
+          businessName,
+          bookingCode: generateBookingCode(),
+          plan: "FREE"
+        }
+      });
+    } catch (e) {
+      await userRepository.update(result.user.id, {
+        businessName,
+      });
+    }
 
     return { 
       success: true,

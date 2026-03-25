@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { registerAction, type AuthState } from "@/lib/actions/auth.actions";
-import { authClient } from "@/lib/auth-client";
+import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -20,11 +20,13 @@ export function RegisterForm() {
         setIsLoggingIn(true);
         try {
           // Auto-login after successful registration
-          await authClient.signIn.email({
+          const supabase = createClient();
+          await supabase.auth.signInWithPassword({
             email: state.credentials.email,
             password: state.credentials.password,
-            callbackURL: "/dashboard",
           });
+          router.push("/dashboard");
+          router.refresh();
         } catch (error) {
           console.error("Auto-login error:", error);
           // If auto-login fails, redirect to login page

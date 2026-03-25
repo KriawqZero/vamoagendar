@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
-import { authClient } from "@/lib/auth-client";
+import { createClient } from "@/utils/supabase/client";
 import { SidebarUpgradeCard } from "@/components/upsell/sidebar-upgrade-card";
 import { BrandMark } from "@/components/brand/brand";
 
@@ -42,7 +42,8 @@ export function Sidebar({ businessName, plan, logoUrl }: SidebarProps) {
   };
 
   async function handleLogout() {
-    await authClient.signOut();
+    const supabase = createClient();
+    await supabase.auth.signOut();
     router.push("/");
     router.refresh();
   }

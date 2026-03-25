@@ -1,28 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest } from 'next/server'
+import { updateSession } from '@/utils/supabase/middleware'
 
-export function middleware(request: NextRequest) {
-  // In production (HTTPS), Better Auth prefixes cookies with __Secure-
-  const sessionCookie =
-    request.cookies.get("better-auth.session_token") ||
-    request.cookies.get("__Secure-better-auth.session_token");
-
-  const { pathname } = request.nextUrl;
-  const isDashboard = pathname.startsWith("/dashboard");
-  const isAuthPage = pathname === "/login" || pathname === "/register";
-
-  // Check for session cookie (Edge Runtime compatible)
-  // Note: Full session validation happens in Server Components via getSession()
-  if (isDashboard && !sessionCookie) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  if (isAuthPage && sessionCookie) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-
-  return NextResponse.next();
+export async function middleware(request: NextRequest) {
+  return await updateSession(request)
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/register"],
-};
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
+}
