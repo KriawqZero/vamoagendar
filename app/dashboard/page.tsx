@@ -4,7 +4,7 @@ import { appointmentRepository } from "@/lib/repositories/appointment.repository
 import { AppointmentCard } from "@/components/dashboard/appointment-card";
 import { formatDateBR, formatWeekdayBR } from "@/lib/utils/date";
 import { CalendarDays } from "lucide-react";
-import { startOfDay, endOfDay, isToday as checkIsToday } from "date-fns";
+import { startOfDay, endOfDay } from "date-fns";
 import Link from "next/link";
 
 export const metadata = {
@@ -51,8 +51,8 @@ export default async function DashboardPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-zinc-100">Agenda</h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <h1 className="text-2xl font-bold text-gray-900">Agenda</h1>
+        <p className="mt-1 text-sm text-gray-500">
           {formatWeekdayBR(now)}, {formatDateBR(now)}
         </p>
       </div>
@@ -60,13 +60,13 @@ export default async function DashboardPage() {
       {/* Next appointment highlight */}
       {nextAppointment && (
         <div className="rounded-2xl border border-violet-500/30 bg-violet-500/5 p-5">
-          <p className="text-xs font-medium uppercase tracking-wider text-violet-400">
+          <p className="text-xs font-medium uppercase tracking-wider text-violet-600">
             Próximo atendimento {countdown}
           </p>
-          <p className="mt-2 text-lg font-semibold text-zinc-100">
+          <p className="mt-2 text-lg font-semibold text-gray-900">
             {nextAppointment.clientName}
           </p>
-          <p className="text-sm text-zinc-400">
+          <p className="text-sm text-gray-500">
             {nextAppointment.service.name} &middot;{" "}
             {new Date(nextAppointment.startTime).toLocaleTimeString("pt-BR", {
               hour: "2-digit",
@@ -74,7 +74,7 @@ export default async function DashboardPage() {
             })}
           </p>
           {nextAppointment.clientPhone && (
-            <p className="mt-1 text-xs text-zinc-500">
+            <p className="mt-1 text-xs text-gray-400">
               {nextAppointment.clientPhone}
             </p>
           )}
@@ -83,13 +83,13 @@ export default async function DashboardPage() {
 
       {/* Today */}
       <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-400">
           Hoje ({todayAppointments.length})
         </h2>
         {todayAppointments.length === 0 ? (
-          <div className="flex flex-col items-center rounded-2xl border border-dashed border-zinc-800 py-12 text-center">
-            <CalendarDays size={32} className="mb-3 text-zinc-600" />
-            <p className="text-sm text-zinc-500">
+          <div className="flex flex-col items-center rounded-2xl border border-dashed border-gray-200 py-12 text-center">
+            <CalendarDays size={32} className="mb-3 text-gray-300" />
+            <p className="text-sm text-gray-400">
               Nenhum agendamento para hoje.
             </p>
             <Link
@@ -121,7 +121,7 @@ export default async function DashboardPage() {
       {/* Upcoming */}
       {upcomingAppointments.length > 0 && (
         <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-400">
             Próximos dias ({upcomingAppointments.length})
           </h2>
           <div className="space-y-3">

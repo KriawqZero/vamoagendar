@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Plan" AS ENUM ('FREE', 'PRO');
+CREATE TYPE "Plan" AS ENUM ('FREE', 'PLUS', 'PRO');
 
 -- CreateEnum
 CREATE TYPE "ExceptionType" AS ENUM ('UNAVAILABLE', 'OVERRIDE');

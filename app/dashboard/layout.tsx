@@ -33,7 +33,7 @@ export default async function DashboardLayout({
   const needsProfileCompletion = !user?.businessName;
 
   return (
-    <div className="flex min-h-screen bg-zinc-950">
+    <div className="flex min-h-screen bg-gray-50">
       <Sidebar businessName={user?.businessName} plan={user?.plan} logoUrl={user?.logoUrl} />
       <main className="flex-1 pt-14 lg:pt-0">
         <div className="mx-auto max-w-5xl p-4 sm:p-6 lg:p-8">

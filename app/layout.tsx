@@ -12,7 +12,8 @@ const inter = Inter({
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: ["400", "700", "900"],
+  style: ["normal", "italic"],
 });
 
 const siteName = "VamoAgendar";

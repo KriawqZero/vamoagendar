@@ -9,12 +9,15 @@ type BrandLogoProps = Omit<ComponentProps<"span">, "children"> & {
   height?: number;
   /** Prioriza carregamento (acima da dobra) */
   priority?: boolean;
+  /** Se deve mostrar o logo escuro ou claro */
+  dark?: boolean;
 };
 
 export function BrandLogo({
   alt = "VamoAgendar",
   height = 22,
   priority,
+  dark = false,
   className,
   ...props
 }: BrandLogoProps) {
@@ -24,20 +27,20 @@ export function BrandLogo({
   return (
     <span className={className} {...props}>
       <Image
-        src="/logo-1-dark.svg"
-        alt={alt}
-        width={width}
-        height={height}
-        priority={priority}
-        className="block dark:hidden"
-      />
-      <Image
         src="/logo-1-white.svg"
         alt={alt}
         width={width}
         height={height}
         priority={priority}
-        className="hidden dark:block"
+        className={dark ? "hidden" : "block"}
+      />
+      <Image
+        src="/logo-1-dark.svg"
+        alt={alt}
+        width={width}
+        height={height}
+        priority={priority}
+        className={dark ? "block" : "hidden"}
       />
     </span>
   );
@@ -89,7 +92,7 @@ export function BrandLink({
       {variant === "mark" ? (
         <BrandMark size={markSize} priority />
       ) : (
-        <BrandLogo height={logoHeight} priority />
+        <BrandLogo height={logoHeight} priority dark />
       )}
     </Link>
   );

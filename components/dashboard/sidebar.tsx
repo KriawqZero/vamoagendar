@@ -58,13 +58,13 @@ export function Sidebar({ businessName, plan, logoUrl }: SidebarProps) {
               className="h-10 w-10 rounded-lg object-cover"
             />
           ) : (
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-900">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-50">
               <BrandMark size={22} />
             </div>
           )}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <h2 className="truncate text-lg font-bold text-zinc-100">
+              <h2 className="truncate text-lg font-bold text-gray-900">
                 {businessName || "VamoAgendar"}
               </h2>
               {(plan === "PRO" || plan === "PLUS") && (
@@ -73,7 +73,7 @@ export function Sidebar({ businessName, plan, logoUrl }: SidebarProps) {
                 </span>
               )}
             </div>
-            <p className="text-xs text-zinc-500">Painel do profissional</p>
+            <p className="text-xs text-gray-400">Painel do profissional</p>
           </div>
         </div>
       </div>
@@ -89,8 +89,8 @@ export function Sidebar({ businessName, plan, logoUrl }: SidebarProps) {
               onClick={() => setMobileOpen(false)}
               className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
                 active
-                  ? "bg-violet-600/10 text-violet-400"
-                  : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+                  ? "bg-violet-50 text-violet-700"
+                  : "text-gray-500 hover:bg-gray-100 hover:text-gray-800"
               }`}
             >
               <Icon size={18} />
@@ -104,7 +104,7 @@ export function Sidebar({ businessName, plan, logoUrl }: SidebarProps) {
 
       <button
         onClick={handleLogout}
-        className="mt-auto flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300"
+        className="mt-auto flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
       >
         <LogOut size={18} />
         Sair
@@ -115,16 +115,13 @@ export function Sidebar({ businessName, plan, logoUrl }: SidebarProps) {
   return (
     <>
       {/* Mobile header */}
-      <div className="fixed left-0 right-0 top-0 z-40 flex h-14 items-center justify-between border-b border-zinc-800 bg-zinc-950 px-4 lg:hidden">
-        <div className="flex items-center gap-2">
-          <BrandMark size={18} />
-          <h2 className="text-sm font-bold text-zinc-100">
-            {businessName || "VamoAgendar"}
-          </h2>
-        </div>
+      <div className="fixed left-0 right-0 top-0 z-40 flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4 lg:hidden">
+        <h2 className="text-sm font-bold text-gray-900">
+          {businessName || "VamoAgendar"}
+        </h2>
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="rounded-lg p-2 text-zinc-400 hover:bg-zinc-800"
+          className="rounded-lg p-2 text-gray-500 hover:bg-gray-100"
         >
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
@@ -140,7 +137,7 @@ export function Sidebar({ businessName, plan, logoUrl }: SidebarProps) {
 
       {/* Mobile sidebar */}
       <aside
-        className={`fixed left-0 top-14 z-50 flex h-[calc(100vh-3.5rem)] w-64 flex-col bg-zinc-950 p-4 transition-transform lg:hidden ${
+        className={`fixed left-0 top-14 z-50 flex h-[calc(100vh-3.5rem)] w-64 flex-col bg-white border-r border-gray-200 p-4 transition-transform lg:hidden ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -148,7 +145,7 @@ export function Sidebar({ businessName, plan, logoUrl }: SidebarProps) {
       </aside>
 
       {/* Desktop sidebar */}
-      <aside className="hidden h-screen w-64 shrink-0 flex-col border-r border-zinc-800 bg-zinc-950 p-4 lg:sticky lg:top-0 lg:flex">
+      <aside className="hidden h-screen w-64 shrink-0 flex-col border-r border-gray-200 bg-white p-4 lg:sticky lg:top-0 lg:flex">
         {nav}
       </aside>
     </>

@@ -7,8 +7,8 @@ export function CompleteProfileBanner() {
       <div className="flex items-start gap-3">
         <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" />
         <div className="flex-1">
-          <h3 className="font-semibold text-amber-100">Complete seu perfil</h3>
-          <p className="mt-1 text-sm text-amber-200/80">
+          <h3 className="font-semibold text-amber-800">Complete seu perfil</h3>
+          <p className="mt-1 text-sm text-amber-700">
             Adicione o nome do seu negócio nas configurações para começar a receber agendamentos.
           </p>
           <Link

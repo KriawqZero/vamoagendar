@@ -9,9 +9,9 @@ export function SidebarUpgradeCard() {
     >
       <div className="flex items-center gap-2">
         <Crown size={16} className="text-violet-400" />
-        <p className="text-sm font-semibold text-zinc-100">Upgrade</p>
+        <p className="text-sm font-semibold text-gray-900">Upgrade</p>
       </div>
-      <p className="mt-1 text-xs text-zinc-400">
+      <p className="mt-1 text-xs text-gray-500">
         Plus por <span className="font-semibold text-emerald-400">R$ 9,90/mês</span> ou Pro por <span className="font-semibold text-emerald-400">R$ 14,90/mês</span>
       </p>
     </Link>

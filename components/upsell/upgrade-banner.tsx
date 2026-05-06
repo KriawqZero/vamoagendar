@@ -16,10 +16,10 @@ export function UpgradeBanner() {
           <Crown size={20} className="text-violet-400" />
         </div>
         <div className="flex-1">
-          <p className="text-sm font-semibold text-zinc-100">
+          <p className="text-sm font-semibold text-gray-900">
             Desbloqueie todo o potencial do VamoAgendar
           </p>
-          <p className="mt-0.5 text-xs text-zinc-400">
+          <p className="mt-0.5 text-xs text-gray-500">
             Link personalizado e customização por <span className="font-semibold text-emerald-400">R$ 9,90/mês</span> (Plus) ou tudo incluso por <span className="font-semibold text-emerald-400">R$ 14,90/mês</span> (Pro)
           </p>
         </div>
@@ -31,7 +31,7 @@ export function UpgradeBanner() {
         </Link>
         <button
           onClick={() => setDismissed(true)}
-          className="shrink-0 rounded-lg p-1 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"
+          className="shrink-0 rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
           aria-label="Dispensar"
         >
           <X size={18} />

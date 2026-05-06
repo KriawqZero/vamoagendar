@@ -17,7 +17,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <div className="flex justify-center">
-            <BrandLogo height={28} priority />
+            <BrandLogo height={28} priority  />
           </div>
           <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
             Entre na sua conta

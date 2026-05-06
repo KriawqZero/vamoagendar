@@ -29,15 +29,15 @@ export default async function AvailabilityPage() {
   return (
     <div className="space-y-10">
       <div>
-        <h1 className="text-2xl font-bold text-zinc-100">Horários</h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <h1 className="text-2xl font-bold text-gray-900">Horários</h1>
+        <p className="mt-1 text-sm text-gray-500">
           Defina seus horários de atendimento semanais.
         </p>
       </div>
 
       <ScheduleEditor initialBlocks={blocks} />
 
-      <hr className="border-zinc-800" />
+      <hr className="border-gray-200" />
 
       <HolidaysManager holidays={holidays} exceptions={exceptions} />
     </div>

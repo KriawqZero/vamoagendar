@@ -33,8 +33,8 @@ export function ServiceList({ services, canCreate, planLimit }: ServiceListProps
     <div>
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">Serviços</h1>
-          <p className="mt-1 text-sm text-zinc-500">
+          <h1 className="text-2xl font-bold text-gray-900">Serviços</h1>
+          <p className="mt-1 text-sm text-gray-500">
             {services.length}{planLimit < Infinity ? `/${planLimit}` : ""} serviços
           </p>
         </div>
@@ -47,7 +47,7 @@ export function ServiceList({ services, canCreate, planLimit }: ServiceListProps
       </div>
 
       {isNearLimit && (
-        <div className="mb-4 rounded-xl border border-amber-500/30 bg-amber-900/10 p-3 text-sm text-amber-400">
+        <div className="mb-4 rounded-xl border border-amber-500/30 bg-amber-50 p-3 text-sm text-amber-700">
           Você está quase no limite ({services.length}/{planLimit} serviços).{" "}
           <Link href="/dashboard/assinatura" className="font-medium underline hover:text-amber-300">
             Seja Pro
@@ -60,9 +60,9 @@ export function ServiceList({ services, canCreate, planLimit }: ServiceListProps
         <div className="mb-4 rounded-xl border-2 border-violet-500/30 bg-violet-500/5 p-4">
           <div className="flex items-center gap-2">
             <Crown size={18} className="text-violet-400" />
-            <p className="text-sm font-semibold text-zinc-100">Limite de serviços atingido</p>
+            <p className="text-sm font-semibold text-gray-900">Limite de serviços atingido</p>
           </div>
-          <p className="mt-2 text-sm text-zinc-400">
+          <p className="mt-2 text-sm text-gray-500">
             Com o plano Pro você tem acesso a:
           </p>
           <ul className="mt-3 space-y-2">
@@ -72,7 +72,7 @@ export function ServiceList({ services, canCreate, planLimit }: ServiceListProps
               "Logo e cor da sua marca",
               "Lembretes por WhatsApp",
             ].map((benefit) => (
-              <li key={benefit} className="flex items-center gap-2 text-sm text-zinc-300">
+              <li key={benefit} className="flex items-center gap-2 text-sm text-gray-700">
                 <CheckCircle2 size={14} className="text-emerald-400" />
                 {benefit}
               </li>
@@ -89,11 +89,11 @@ export function ServiceList({ services, canCreate, planLimit }: ServiceListProps
       )}
 
       {services.length === 0 ? (
-        <div className="flex flex-col items-center rounded-2xl border border-dashed border-zinc-800 py-16 text-center">
-          <p className="mb-1 text-sm font-medium text-zinc-400">
+        <div className="flex flex-col items-center rounded-2xl border border-dashed border-gray-200 py-16 text-center">
+          <p className="mb-1 text-sm font-medium text-gray-500">
             Nenhum serviço cadastrado
           </p>
-          <p className="mb-4 text-xs text-zinc-600">
+          <p className="mb-4 text-xs text-gray-400">
             Crie seu primeiro serviço para começar a receber agendamentos.
           </p>
           <Button onClick={() => setShowCreate(true)} size="sm">
@@ -106,18 +106,18 @@ export function ServiceList({ services, canCreate, planLimit }: ServiceListProps
           {services.map((service) => (
             <div
               key={service.id}
-              className="flex items-center justify-between rounded-2xl border border-zinc-800 bg-zinc-900 p-4"
+              className="flex items-center justify-between rounded-2xl border border-gray-200 bg-white p-4"
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <p className="truncate text-sm font-semibold text-zinc-100">
+                  <p className="truncate text-sm font-semibold text-gray-900">
                     {service.name}
                   </p>
                   <Badge variant={service.active ? "success" : "default"}>
                     {service.active ? "Ativo" : "Inativo"}
                   </Badge>
                 </div>
-                <p className="mt-0.5 flex items-center gap-1 text-xs text-zinc-500">
+                <p className="mt-0.5 flex items-center gap-1 text-xs text-gray-400">
                   <Clock size={12} />
                   {service.durationMinutes} min
                 </p>
@@ -126,13 +126,13 @@ export function ServiceList({ services, canCreate, planLimit }: ServiceListProps
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => toggleServiceAction(service.id)}
-                  className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+                  className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
                 >
                   {service.active ? "Desativar" : "Ativar"}
                 </button>
                 <button
                   onClick={() => setEditService(service)}
-                  className="rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"
+                  className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
                 >
                   <Pencil size={14} />
                 </button>
@@ -142,7 +142,7 @@ export function ServiceList({ services, canCreate, planLimit }: ServiceListProps
                       deleteServiceAction(service.id);
                     }
                   }}
-                  className="rounded-lg p-1.5 text-zinc-500 hover:bg-red-900/30 hover:text-red-400"
+                  className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
                 >
                   <Trash2 size={14} />
                 </button>

@@ -62,15 +62,15 @@ export function SettingsForm({ user }: SettingsFormProps) {
     <div className="space-y-8">
       {/* Automatic booking link */}
       <section>
-        <h2 className="mb-4 text-lg font-semibold text-zinc-100">Link de agendamento automático</h2>
-        <p className="mb-3 text-sm text-zinc-500">
+        <h2 className="mb-4 text-lg font-semibold text-gray-900">Link de agendamento automático</h2>
+        <p className="mb-3 text-sm text-gray-500">
           Este é seu link permanente, gerado automaticamente. Sempre funcionará.
         </p>
-        <div className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3">
-          <span className="flex-1 truncate text-sm text-zinc-300">{autoBookingUrl}</span>
+        <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+          <span className="flex-1 truncate text-sm text-gray-700">{autoBookingUrl}</span>
           <button
             onClick={() => copyLink(autoBookingUrl)}
-            className="rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"
+            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-200 hover:text-gray-600"
             title="Copiar link"
           >
             <Copy size={16} />
@@ -79,7 +79,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
             href={`/a/${user.bookingCode}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"
+            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-200 hover:text-gray-600"
             title="Abrir link"
           >
             <ExternalLink size={16} />
@@ -89,16 +89,16 @@ export function SettingsForm({ user }: SettingsFormProps) {
 
       {/* Plan info */}
       <section>
-        <h2 className="mb-4 text-lg font-semibold text-zinc-100">Plano</h2>
+        <h2 className="mb-4 text-lg font-semibold text-gray-900">Plano</h2>
         <Link
           href="/dashboard/assinatura"
-          className="flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 transition-colors hover:border-zinc-700"
+          className="flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 transition-colors hover:border-gray-300"
         >
           <div className="flex items-center gap-3">
             <Badge variant={isPro || isPlus ? "success" : "default"}>
               {isPro ? "Pro" : isPlus ? "Plus" : "Gratuito"}
             </Badge>
-            <span className="text-sm text-zinc-400">
+            <span className="text-sm text-gray-500">
               {isPro ? "Todos os recursos disponíveis" : isPlus ? "Customização e link personalizado" : "Até 2 serviços, link automático"}
             </span>
           </div>
@@ -111,7 +111,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
       {/* Custom slug (PLUS/PRO) */}
       <section>
         <div className="mb-4 flex items-center gap-2">
-          <h2 className="text-lg font-semibold text-zinc-100">Link personalizado</h2>
+          <h2 className="text-lg font-semibold text-gray-900">Link personalizado</h2>
           {canCustomSlug && (
             <Badge variant="success">
               <Crown size={12} className="mr-1" />
@@ -121,15 +121,15 @@ export function SettingsForm({ user }: SettingsFormProps) {
         </div>
         {canCustomSlug ? (
           <div className="space-y-4">
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-gray-500">
               Personalize seu link para algo memorável. Você pode alterar a cada 7 dias.
             </p>
             {customBookingUrl && (
-              <div className="flex items-center gap-2 rounded-xl border border-violet-500/30 bg-violet-500/5 px-4 py-3">
-                <span className="flex-1 truncate text-sm text-zinc-300">{customBookingUrl}</span>
+              <div className="flex items-center gap-2 rounded-xl border border-violet-200 bg-violet-50 px-4 py-3">
+                <span className="flex-1 truncate text-sm text-gray-700">{customBookingUrl}</span>
                 <button
                   onClick={() => copyLink(customBookingUrl)}
-                  className="rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"
+                  className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-200 hover:text-gray-600"
                   title="Copiar link"
                 >
                   <Copy size={16} />
@@ -138,7 +138,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
                   href={isPro ? `/${user.customSlug}` : `/a/${user.customSlug}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"
+                  className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-200 hover:text-gray-600"
                   title="Abrir link"
                 >
                   <ExternalLink size={16} />
@@ -147,18 +147,18 @@ export function SettingsForm({ user }: SettingsFormProps) {
             )}
             <form action={customSlugAction} className="space-y-4">
               {customSlugState.error && (
-                <div className="rounded-xl bg-red-900/20 p-3 text-sm text-red-400">{customSlugState.error}</div>
+                <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600">{customSlugState.error}</div>
               )}
               {customSlugState.success && (
-                <div className="rounded-xl bg-emerald-900/20 p-3 text-sm text-emerald-400">Link personalizado atualizado!</div>
+                <div className="rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700">Link personalizado atualizado!</div>
               )}
               {daysUntilChange !== null && (
-                <div className="rounded-xl bg-amber-900/20 p-3 text-sm text-amber-400">
+                <div className="rounded-xl bg-amber-50 p-3 text-sm text-amber-700">
                   Você poderá alterar novamente em {daysUntilChange} dia{daysUntilChange > 1 ? "s" : ""}.
                 </div>
               )}
               <div className="flex items-center gap-2">
-                <span className="text-sm text-zinc-500">vamoagendar.com.br/{isPro ? "" : "a/"}</span>
+                <span className="text-sm text-gray-500">vamoagendar.com.br/{isPro ? "" : "a/"}</span>
                 <Input
                   id="customSlug"
                   name="customSlug"
@@ -167,7 +167,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
                   className="flex-1"
                 />
               </div>
-              <p className="text-xs text-zinc-600">
+              <p className="text-xs text-gray-400">
                 Use 3-32 caracteres: letras, números e hifens. Links como &quot;login&quot;, &quot;dashboard&quot; são reservados.
               </p>
               <Button type="submit" loading={customSlugPending} size="sm" disabled={daysUntilChange !== null}>
@@ -186,18 +186,18 @@ export function SettingsForm({ user }: SettingsFormProps) {
 
       {/* Profile */}
       <section>
-        <h2 className="mb-4 text-lg font-semibold text-zinc-100">Perfil</h2>
+        <h2 className="mb-4 text-lg font-semibold text-gray-900">Perfil</h2>
         
         <form action={profileAction} className="space-y-4">
           {profileState.fieldErrors && (
-            <div className="rounded-xl bg-red-900/20 p-3 text-sm text-red-400">
+            <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600">
               {profileState.fieldErrors.name?.[0] && <div>{profileState.fieldErrors.name?.[0]}</div>}
               {profileState.fieldErrors.businessName?.[0] && <div>{profileState.fieldErrors.businessName?.[0]}</div>}
               {profileState.fieldErrors.accentColor?.[0] && <div>{profileState.fieldErrors.accentColor?.[0]}</div>}
             </div>
           )}
           {profileState.success && (
-            <div className="rounded-xl bg-emerald-900/20 p-3 text-sm text-emerald-400">Perfil atualizado!</div>
+            <div className="rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700">Perfil atualizado!</div>
           )}
 
           <Input
@@ -220,7 +220,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
 
           {canLogo ? (
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-zinc-300">
+              <label className="text-sm font-medium text-gray-700">
                 Logo personalizado (opcional)
               </label>
               <LogoUpload currentLogoUrl={user.logoUrl} />
@@ -234,7 +234,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
 
           {canAccentColor ? (
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="settings-accentColor" className="text-sm font-medium text-zinc-300">
+              <label htmlFor="settings-accentColor" className="text-sm font-medium text-gray-700">
                 Cor de destaque
               </label>
               <div className="flex items-center gap-3">
@@ -243,9 +243,9 @@ export function SettingsForm({ user }: SettingsFormProps) {
                   name="accentColor"
                   type="color"
                   defaultValue={user.accentColor}
-                  className="h-10 w-14 cursor-pointer rounded-lg border border-zinc-700 bg-zinc-900"
+                  className="h-10 w-14 cursor-pointer rounded-lg border border-gray-300 bg-white"
                 />
-                <span className="text-xs text-zinc-500">{user.accentColor}</span>
+                <span className="text-xs text-gray-500">{user.accentColor}</span>
               </div>
             </div>
           ) : (
@@ -256,8 +256,8 @@ export function SettingsForm({ user }: SettingsFormProps) {
           )}
 
           <div>
-            <label className="text-sm font-medium text-zinc-300">Email</label>
-            <p className="mt-1 text-sm text-zinc-500">{user.email}</p>
+            <label className="text-sm font-medium text-gray-700">Email</label>
+            <p className="mt-1 text-sm text-gray-500">{user.email}</p>
           </div>
 
           <Button type="submit" loading={profilePending}>

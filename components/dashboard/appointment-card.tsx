@@ -1,6 +1,6 @@
 import { formatTimeBR } from "@/lib/utils/date";
 import { Badge } from "@/components/ui/badge";
-import { Clock, User, Phone, Mail } from "lucide-react";
+import { Clock, Phone, Mail } from "lucide-react";
 
 interface AppointmentCardProps {
   clientName: string;
@@ -41,26 +41,26 @@ export function AppointmentCard({
     <div
       className={`rounded-2xl border p-4 transition-colors ${
         isNext
-          ? "border-violet-500/50 bg-violet-500/5"
-          : "border-zinc-800 bg-zinc-900"
+          ? "border-violet-400/40 bg-violet-50/60"
+          : "border-gray-200 bg-white"
       }`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <p className="truncate text-sm font-semibold text-zinc-100">
+            <p className="truncate text-sm font-semibold text-gray-900">
               {clientName}
             </p>
             {isNext && (
               <Badge variant="success">Próximo</Badge>
             )}
           </div>
-          <p className="mt-0.5 text-sm text-violet-400">{serviceName}</p>
+          <p className="mt-0.5 text-sm font-medium text-violet-600">{serviceName}</p>
         </div>
         <Badge variant={statusVariant}>{statusLabel}</Badge>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-400">
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-400">
         <span className="flex items-center gap-1">
           <Clock size={12} />
           {formatTimeBR(startTime)} – {formatTimeBR(endTime)}

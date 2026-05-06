@@ -59,20 +59,20 @@ export function LogoUpload({ currentLogoUrl }: LogoUploadProps) {
   return (
     <div className="space-y-4">
       {uploadState.error && (
-        <div className="rounded-xl bg-red-900/20 p-3 text-sm text-red-400">
+        <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600">
           {uploadState.error}
         </div>
       )}
 
       {uploadState.success && (
-        <div className="rounded-xl bg-emerald-900/20 p-3 text-sm text-emerald-400">
+        <div className="rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700">
           Logo atualizado com sucesso!
         </div>
       )}
 
       <div className="flex items-start gap-4">
         {/* Preview */}
-        <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
+        <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
           {previewUrl || displayUrl ? (
             <img
               src={previewUrl || displayUrl || ""}
@@ -80,7 +80,7 @@ export function LogoUpload({ currentLogoUrl }: LogoUploadProps) {
               className="h-full w-full object-cover"
             />
           ) : (
-            <ImageIcon size={32} className="text-zinc-600" />
+            <ImageIcon size={32} className="text-gray-300" />
           )}
         </div>
 
@@ -128,7 +128,7 @@ export function LogoUpload({ currentLogoUrl }: LogoUploadProps) {
             </div>
           </form>
 
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-gray-400">
             JPG, PNG ou WebP. Máximo 2MB.
           </p>
         </div>

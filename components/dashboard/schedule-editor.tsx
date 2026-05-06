@@ -45,12 +45,12 @@ export function ScheduleEditor({ initialBlocks }: ScheduleEditorProps) {
       <input type="hidden" name="schedule" value={JSON.stringify(blocks)} />
 
       {state.error && (
-        <div className="mb-4 rounded-xl bg-red-900/20 p-3 text-sm text-red-400">
+        <div className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-600">
           {state.error}
         </div>
       )}
       {state.success && (
-        <div className="mb-4 rounded-xl bg-emerald-900/20 p-3 text-sm text-emerald-400">
+        <div className="mb-4 rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700">
           Horários salvos com sucesso!
         </div>
       )}
@@ -59,15 +59,15 @@ export function ScheduleEditor({ initialBlocks }: ScheduleEditorProps) {
         {[1, 2, 3, 4, 5, 6, 0].map((day) => {
           const dBlocks = dayBlocks(day);
           return (
-            <div key={day} className="rounded-2xl border border-zinc-800 bg-zinc-900 p-4">
+            <div key={day} className="rounded-2xl border border-gray-200 bg-white p-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-zinc-200">
+                <h3 className="text-sm font-semibold text-gray-900">
                   {WEEKDAY_NAMES[day]}
                 </h3>
                 <button
                   type="button"
                   onClick={() => addBlock(day)}
-                  className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-violet-400 hover:bg-violet-500/10"
+                  className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-violet-600 hover:bg-violet-50"
                 >
                   <Plus size={14} />
                   Horário
@@ -75,7 +75,7 @@ export function ScheduleEditor({ initialBlocks }: ScheduleEditorProps) {
               </div>
 
               {dBlocks.length === 0 ? (
-                <p className="mt-2 text-xs text-zinc-600">Fechado</p>
+                <p className="mt-2 text-xs text-gray-400">Fechado</p>
               ) : (
                 <div className="mt-3 space-y-2">
                   {dBlocks.map((block) => (
@@ -84,19 +84,19 @@ export function ScheduleEditor({ initialBlocks }: ScheduleEditorProps) {
                         type="time"
                         value={block.startTime}
                         onChange={(e) => updateBlock(block.originalIndex, "startTime", e.target.value)}
-                        className="h-9 rounded-lg border border-zinc-700 bg-zinc-800 px-2 text-sm text-zinc-200 focus:border-violet-500 focus:outline-none"
+                        className="h-9 rounded-lg border border-gray-200 bg-white px-2 text-sm text-gray-900 focus:border-violet-500 focus:outline-none"
                       />
-                      <span className="text-xs text-zinc-500">até</span>
+                      <span className="text-xs text-gray-400">até</span>
                       <input
                         type="time"
                         value={block.endTime}
                         onChange={(e) => updateBlock(block.originalIndex, "endTime", e.target.value)}
-                        className="h-9 rounded-lg border border-zinc-700 bg-zinc-800 px-2 text-sm text-zinc-200 focus:border-violet-500 focus:outline-none"
+                        className="h-9 rounded-lg border border-gray-200 bg-white px-2 text-sm text-gray-900 focus:border-violet-500 focus:outline-none"
                       />
                       <button
                         type="button"
                         onClick={() => removeBlock(block.originalIndex)}
-                        className="rounded-lg p-1.5 text-zinc-500 hover:bg-red-900/30 hover:text-red-400"
+                        className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
                       >
                         <Trash2 size={14} />
                       </button>

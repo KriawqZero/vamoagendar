@@ -23,8 +23,8 @@ export default async function AssinaturaPage({ searchParams }: AssinaturaPagePro
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-zinc-100">Assinatura</h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <h1 className="text-2xl font-bold text-gray-900">Assinatura</h1>
+        <p className="mt-1 text-sm text-gray-500">
           Gerencie seu plano e assinatura.
         </p>
       </div>

@@ -9,15 +9,15 @@ interface FeatureLockCardProps {
 
 export function FeatureLockCard({ featureName, benefitText, example }: FeatureLockCardProps) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
-      <div className="flex items-center gap-2 text-zinc-500">
+    <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+      <div className="flex items-center gap-2 text-gray-400">
         <Lock size={16} />
         <p className="text-sm font-medium">{featureName} disponível nos planos Plus/Pro</p>
       </div>
-      <p className="mt-2 text-sm text-zinc-400">{benefitText}</p>
+      <p className="mt-2 text-sm text-gray-500">{benefitText}</p>
       {example && (
-        <p className="mt-1 text-xs text-zinc-600">
-          Exemplo: <span className="font-mono text-zinc-500">{example}</span>
+        <p className="mt-1 text-xs text-gray-400">
+          Exemplo: <span className="font-mono text-gray-500">{example}</span>
         </p>
       )}
       <Link
