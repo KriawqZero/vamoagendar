@@ -1,142 +1,83 @@
 # VamoAgendar
 
-Agendamento simples para profissionais. Um link, seus clientes agendam.
+Um sistema de agendamento online focado em profissionais independentes. A ideia é simples: o profissional configura seus serviços e horários, ganha um link e os clientes agendam sozinhos.
+
+## Contexto
+
+Este projeto nasceu para resolver um problema muito prático: o tempo gasto trocando mensagens no WhatsApp apenas para encontrar um horário livre na agenda. Ele funciona como um "link na bio" (similar ao Calendly), mas com uma experiência pensada primeiramente para o celular e estrutura para atuar como um SaaS (software as a service) com planos gratuitos e pagos.
+
+O desenvolvimento também serviu como espaço para explorar e consolidar padrões do ecossistema do Next.js 16, como Server Components e Server Actions, além de utilizar a versão mais recente do Tailwind (v4) e o Prisma ORM (v7).
+
+## O que já está funcionando?
+
+O core da aplicação está pronto e funcional:
+
+- **Autenticação e Perfis**: Login e cadastro via email utilizando `better-auth`.
+- **Motor de Agendamento**: Uma lógica que cruza o horário de trabalho padrão, a duração do serviço escolhido e as exceções (feriados, folgas, dias bloqueados) para gerar a lista exata de horários disponíveis.
+- **Dashboard do Profissional**: Visão geral dos agendamentos do dia, contagem regressiva para o próximo cliente e configuração de disponibilidade.
+- **Booking Público**: Fluxo passo a passo para o cliente final realizar o agendamento, focado em conversão e usabilidade mobile.
+- **Planos e Limites**: Controle de permissões (como limite de serviços ou customização de cores) dependendo do plano do usuário (Free, Plus, Pro).
 
 ## Stack
 
-- **Next.js 16** (App Router, Server Components, Server Actions)
-- **React 19** + **TypeScript**
-- **Tailwind CSS v4**
-- **Prisma 7** + **PostgreSQL**
-- **Auth.js** (next-auth v5)
-- **Mercado Pago SDK** (billing)
-- **pnpm**
+- **Framework**: Next.js 16 (App Router) + React 19
+- **Linguagem**: TypeScript
+- **Estilo**: Tailwind CSS v4
+- **Banco de Dados**: PostgreSQL
+- **ORM**: Prisma 7
+- **Autenticação**: better-auth
+- **Pagamentos**: Mercado Pago SDK
+- **Pacotes**: pnpm
 
-## Setup
+## Como rodar o projeto
 
-### 1. Prerequisites
+Você precisará do [Node.js](https://nodejs.org/) (v20+), [pnpm](https://pnpm.io/) e [Docker](https://www.docker.com/) (para rodar o banco de dados localmente).
 
-- Node.js >= 20
-- pnpm >= 9
-- Docker (for PostgreSQL)
+1. **Instale as dependências:**
+   ```bash
+   pnpm install
+   ```
 
-### 2. Clone and install
+2. **Suba o banco de dados:**
+   O projeto inclui um `docker-compose.yml` já configurado com PostgreSQL.
+   ```bash
+   docker compose up -d
+   ```
 
-```bash
-git clone <repo-url>
-cd vamoagendar
-pnpm install
-```
+3. **Configure as variáveis de ambiente:**
+   Copie o arquivo de exemplo e ajuste se necessário. O padrão do `.env.example` já serve para o Docker local.
+   ```bash
+   cp .env.example .env
+   ```
 
-### 3. Start the database
+4. **Prepare o banco de dados:**
+   Rode as migrations e gere o client do Prisma.
+   ```bash
+   pnpm prisma migrate dev
+   pnpm prisma generate
+   ```
 
-```bash
-docker compose up -d
-```
+5. **Inicie o servidor de desenvolvimento:**
+   ```bash
+   pnpm dev
+   ```
+   Acesse `http://localhost:3000`.
 
-This starts PostgreSQL on port 5432 with:
-- Database: `vamoagendar`
-- User: `vamoagendar`
-- Password: `secret`
+## Integração de Pagamentos (Status)
 
-### 4. Configure environment
+A base do sistema de faturamento foi estruturada. O banco de dados suporta o modelo de assinaturas e existe uma abstração no código para o provedor de pagamentos. O checkout via Mercado Pago gera a preferência de pagamento corretamente e a rota de webhook recebe os eventos.
 
-Copy `.env` and adjust if needed. Default values work with the Docker setup above.
+**O que falta para produção:** A validação criptográfica da assinatura do webhook do Mercado Pago, a transição de pagamentos avulsos para assinaturas recorrentes reais e tratativas avançadas de retry/idempotência. O fluxo atende bem ao ambiente de desenvolvimento, mas precisa dessas travas de segurança antes de processar transações reais.
 
-Required env vars:
+## Alguns aprendizados
 
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | PostgreSQL connection string |
-| `AUTH_SECRET` | NextAuth secret |
-| `AUTH_URL` | App URL for auth |
-| `MERCADO_PAGO_ACCESS_TOKEN` | MP access token (billing) |
-| `MERCADO_PAGO_PUBLIC_KEY` | MP public key (billing) |
-| `MERCADO_PAGO_WEBHOOK_SECRET` | MP webhook signature secret |
-| `APP_URL` | Public app URL for webhooks |
+Construir o motor de geração de horários (slots) foi o maior desafio técnico. Calcular o tempo livre não é só pegar o início e fim do expediente; é preciso considerar a duração variável de cada serviço, subtrair os blocos que já foram agendados, verificar exceções pontuais na agenda e garantir que intervalos sejam respeitados. Abstrair essa complexidade em serviços dedicados dentro de `lib/services/` foi essencial para não sujar a camada de controllers.
 
-SMTP vars are optional for email notifications.
+Outro ponto interessante foi adotar Server Actions para as mutações de dados. Isso reduziu drasticamente o código repetitivo (boilerplate) que normalmente seria gasto criando rotas de API intermediárias apenas para receber dados de um formulário e repassar para o banco.
 
-### 5. Run migrations
+## Estrutura principal
 
-```bash
-pnpm prisma migrate dev --name init
-```
-
-### 6. Generate Prisma Client
-
-```bash
-pnpm prisma generate
-```
-
-### 7. Start development server
-
-```bash
-pnpm dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
-
-## Project Structure
-
-```
-app/
-  (auth)/          → login, register pages
-  (dashboard)/     → professional dashboard
-  book/[slug]/     → public booking page
-  planos/          → public pricing page
-  api/billing/     → webhook + checkout routes
-  api/             → notification routes, auth handler
-lib/
-  actions/         → server actions (mutations)
-  billing/         → billing provider abstraction + Mercado Pago
-  repositories/    → Prisma queries
-  services/        → business logic (slots, booking, billing, notifications)
-  utils/           → date, slug, plan helpers
-  auth.ts          → Auth.js config
-  prisma.ts        → Prisma client singleton
-components/
-  ui/              → reusable components (Button, Input, Card, Modal, Badge)
-  dashboard/       → dashboard components (incl. subscription-card)
-  booking/         → public booking wizard
-  auth/            → login/register forms
-prisma/
-  schema.prisma    → database models (User, Service, Subscription, ...)
-```
-
-## Features
-
-- **Authentication** — email/password registration and login
-- **Dashboard** — today's appointments, next client countdown, upcoming schedule
-- **Services** — create/edit/toggle services with plan limits (FREE: max 2)
-- **Availability** — weekly working hours with multiple blocks per day
-- **Exceptions** — mark specific days/times as unavailable or override schedule
-- **Holidays** — block entire days from booking
-- **Public Booking** — mobile-first step-by-step wizard (service → date → time → contact → confirm)
-- **Slot Engine** — auto-generates valid time slots respecting all rules
-- **Settings** — profile, accent color, custom slug (PRO), plan info
-- **Billing** — subscription management, plan comparison, upgrade/cancel flow
-- **Pricing Page** — public `/planos` with FREE vs PRO comparison
-- **Mercado Pago** — billing provider scaffold (checkout, webhook, subscription sync)
-- **Notifications** — email confirmation scaffolding, WhatsApp placeholder
-
-## Plans
-
-| Feature | Free | Plus (R$ 9,90/mês ou R$ 99,90/ano) | Pro (R$ 14,90/mês ou R$ 149,90/ano) |
-|---------|------|----------------------------------|---------------------------------|
-| Services | 2 max | Unlimited | Unlimited |
-| Custom slug | No | Yes (em `/a/{slug}`) | Yes (em `/{slug}`) |
-| Logo customization | No | No | Yes |
-| Accent color | No | Yes | Yes |
-| WhatsApp reminders | No | No | Yes |
-
-## Billing Status
-
-The billing foundation is implemented with:
-- **Subscription model** — persists plan, status, Mercado Pago references
-- **Abstract BillingProvider** — interface + MercadoPago SDK implementation
-- **Checkout flow** — creates MP preference, redirects to payment
-- **Webhook route** — receives MP events, syncs subscription status
-- **Dashboard billing page** — upgrade CTA, plan limits, cancel flow
-
-**Not yet production-ready:** webhook signature validation, recurring pre-approval (subscription) vs one-time preference, retry/idempotency, billing history. These are the next steps to finish before going live.
+- `/app`: Rotas da aplicação (divididas em grupos lógicos como `(auth)`, `(dashboard)`, além do fluxo público de booking).
+- `/components`: Componentes React divididos por domínio (interface, dashboard, formulários de booking).
+- `/lib`: Camada de regras de negócio (`/services`), queries isoladas (`/repositories`) e integrações externas (`/billing`).
+- `/prisma`: Definições do banco de dados.
